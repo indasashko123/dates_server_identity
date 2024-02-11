@@ -1,0 +1,48 @@
+{
+    "compilerOptions": {
+      "target": "ES2021",
+      "module": "CommonJS",
+      "outDir": "./dist",
+      "experimentalDecorators": true,
+      "esModuleInterop": true,      
+
+      "types": [
+        "node"
+      ],
+      //"baseUrl": "./",
+/*      
+      "paths": {
+        "@interfaces" : [
+          "src/interfaces/index"
+        ],
+        "@common" : [
+          "src/common/index"
+        ],
+        "@config" : [
+          "src/config/index"
+        ],
+        "@db_sequalize/*" : [
+          "src/database/sequelize/*"
+        ],
+        "@components" : [
+          "src/components/index"
+        ],
+        "@services" : [
+          "src/components/services/index"
+        ],
+        "@controllers" : [
+          "src/components/controllers/index"
+        ],
+        "@routers" : [
+          "src/components/routers/index"
+        ],
+        "@dto" : [
+          "src/components/dto/index"
+        ]
+      },
+*/      
+    },
+    "exclude": [
+      "node_modules"
+    ],
+}
