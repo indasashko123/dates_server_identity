@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 
-import { CreateAccountDto, LoginDto } from "../../dto";
-import { authService } from "../../services";
-import { ApiError, ExtendRequest } from "../../../common";
 
+import { authService,LoginDto,CreateAccountDto } from "../../../../../app";
+import { ExtendRequest } from "../../../extensions";
+import { ApiError } from "../../../exceptions"; 
 
 
 export class AuthController {

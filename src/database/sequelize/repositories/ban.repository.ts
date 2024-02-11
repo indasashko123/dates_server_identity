@@ -1,5 +1,4 @@
-import { BanTarget, GetBanQuerry } from "../../../common";
-import { IBanCreationAttribute, IBanRepository } from "../../../interfaces";
+import { IBanCreationAttribute, IBanRepository,GetBanQuerry,BanTarget } from "../../../app";
 import { BanModel } from "../models";
 
 

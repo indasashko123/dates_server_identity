@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { GetAccountQuerry } from "../../../common/querry";
+import { GetAccountQuerry } from "../../../../../app";
 import { validationResult } from "express-validator";
-import { ApiError } from "../../../common";
-import { ExtendRequest } from "../../../common";
-import { accountService } from "../../services";
+import { ApiError } from "../../../exceptions";
+import { ExtendRequest } from "../../../extensions";
+import { accountService } from "../../../../../app";
 
 
 

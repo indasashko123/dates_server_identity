@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiError } from "../../common";
+import { ApiError } from "../../exceptions";
 
 export const ErrorMiddleware = (err : any, req : Request, res : Response, next : NextFunction) => {
     if (err instanceof ApiError) {

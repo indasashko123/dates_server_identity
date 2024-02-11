@@ -1,9 +1,5 @@
 import { accountRoleRepository, roleRepository } from ".";
-import { AccountTarget } from "../../../common";
-import { CreateAccountRoleDto } from "../../../components/dto/account/createAccountRole.dto";
-import { GetAccountQuerry } from "../../../common/querry";
-import { IAccountCreationAttribute } from "../../../interfaces";  
-import { IAccountRepository } from "../../../interfaces";
+import { CreateAccountRoleDto,AccountTarget,GetAccountQuerry,IAccountCreationAttribute,IAccountRepository } from "../../../app";
 import { AccountModel, AccountRoleModel } from "../models";
 
 

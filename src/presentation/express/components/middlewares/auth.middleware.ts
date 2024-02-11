@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiError, ExtendRequest } from "../../common";
-import { tokenService } from "../services";
-
+import { ApiError } from "../../exceptions"; 
+import { tokenService } from "../../../../app";
+import { ExtendRequest } from "../../extensions";
 
 
 export const authMiddleware = (req : ExtendRequest ,res : Response, next : NextFunction) => {

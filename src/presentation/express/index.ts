@@ -3,10 +3,10 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import * as dotenv from 'dotenv';
 
-import { ErrorMiddleware } from './src/components/middlewares';
-import { sync } from './src/database'; 
-import { mainConfig } from './src/config';
-import { router } from './src/components/routers';
+import { ErrorMiddleware } from './components/middlewares';
+import { sync } from '../../database';
+import { mainConfig } from '../../config';
+import { router } from "./components"
 
 
 dotenv.config();
@@ -22,7 +22,7 @@ app.use('',router);
 app.use(ErrorMiddleware);
 
 
-const start = async ()=> {
+export const start = async ()=> {
   try {
     app.listen(port);
       console.log(`Server is running at ${mainConfig.server.host}`);
@@ -32,4 +32,4 @@ const start = async ()=> {
   }
 }
 
-start();
+//start();

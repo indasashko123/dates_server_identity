@@ -1,5 +1,4 @@
-import { CreateAccountRoleDto } from "../../../components/dto/account/createAccountRole.dto";
-import { IAccountRoleRepository } from "../../../interfaces/repositories/iAccountRole.repository";
+import { IAccountRoleRepository,CreateAccountRoleDto } from "../../../app";
 import { AccountRoleModel } from "../models";
 
 

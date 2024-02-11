@@ -1,6 +1,4 @@
-import { ActivationTarget } from "../../../common";
-import { GetActivationQuerry } from "../../../common/querry";
-import { IActivationCreationAttribute, IActivationRepository } from "../../../interfaces";
+import { IActivationCreationAttribute, IActivationRepository,GetActivationQuerry,ActivationTarget } from "../../../app"
 import { ActivationModel } from "../models";
 
 
