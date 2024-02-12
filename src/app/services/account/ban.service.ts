@@ -1,15 +1,17 @@
-import { NextFunction, Response } from "express";
-import { ApiError, ExtendRequest } from "../../../common";
-import { IBanCreationAttribute } from "../../../interfaces";
-import { BanModel, banRepository } from "../../../database";
+import { Ban } from "../../../domain";
+import { ApiError } from "../../../presentation/express/exceptions";
+import { IBanCreationAttribute, IBanRepository, IBanService } from "../../interfaces";
 
 
-
-export class BanService {
+export class BanService implements IBanService{
     
-    async ban (data : IBanCreationAttribute) : Promise<BanModel> {
+    constructor(private readonly banRepository : IBanRepository) {
+
+    }
+
+    async ban (data : IBanCreationAttribute) : Promise<Ban> {
         try { 
-           const ban = await banRepository.create(data);
+           const ban = await this.banRepository.create(data);
            return ban;
         } catch (e) {
             throw ApiError.InternalError(e);

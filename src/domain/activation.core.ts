@@ -1,6 +1,6 @@
-export interface Activation {
+export class Activation {
     id : number;
     accountId : string;
-    value : string;
+    link : string;
     isEmailConfirmed : boolean;
 }

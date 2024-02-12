@@ -1,11 +1,9 @@
 import * as jwt from "jsonwebtoken";
 import { mainConfig } from "../../../config";
-import { IJwtToken } from "../../../interfaces";
-import { ITokenPayload } from "../../../interfaces/jwt/iTokenPayload";
-import { ApiError } from "../../../common";
+import { ITokenPayload,IJwtToken ,ITokenService } from "../../interfaces";
 
 
-export class TokenService {
+export class TokenService implements ITokenService{
     
     generateTokens (payload : ITokenPayload) : IJwtToken {
         return {

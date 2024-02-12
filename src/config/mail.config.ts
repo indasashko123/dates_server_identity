@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+
 export const mailConfig = {
     mailHost : process.env.MAIL_HOST,
     mailPort : process.env.MAIL_PORT,

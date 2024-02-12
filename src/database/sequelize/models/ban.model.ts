@@ -1,5 +1,5 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
-import { IBanCreationAttribute } from "../../../interfaces/creationAttibutes";
+import { IBanCreationAttribute } from "../../../app";
 
 
 @Table({modelName : "ban"})

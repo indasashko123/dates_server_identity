@@ -1,22 +1,42 @@
-import { AccountModel, accountRepository, accountRoleRepository, roleRepository } from "../../../database";
-import { ConfirmEmailDto, CreateAccountDto, LoginDto } from "../../dto";
-import { AccountTarget } from "../../../common";
 import * as bcrypt from "bcrypt";
-import { mainConfig } from "../../../config";
-import { activationService, mailService, tokenService } from "..";
 import * as uuid from "uuid";
-import { IJwtToken } from "../../../interfaces";import { LoginResponce } from "../../responces";
-import { ITokenPayload } from "../../../interfaces/jwt/iTokenPayload";
-import { ApiError } from "../../../common";
+
+import { CreateAccountDto, LoginDto } from "../../dto";
+import { AccountTarget } from "../../enums";
+import { mainConfig } from "../../../config";
+import {    ITokenPayload,
+            IJwtToken, 
+            IAuthService, 
+            IAccountService, 
+            IActivationService, 
+            IMailService, 
+            ITokenService, 
+            IAccountRoleRepository } from "../../interfaces";
+
+import { ApiError } from "../../../presentation/express/exceptions";
+import { LoginResponce } from "../../../presentation/express/components/responces";
 
 
 
 
-export class AuthService {
+export class AuthService implements IAuthService {
+
+
+    constructor (
+        private readonly accountService : IAccountService,
+        private readonly activationService : IActivationService,
+        private readonly mailService : IMailService,
+        private readonly tokenService : ITokenService,
+        private readonly accountRoleRepository : IAccountRoleRepository
+    ) {
+
+    }
+
+
 
     async registration (dto : CreateAccountDto) : Promise<LoginResponce> {
         try {
-            const candidate = await accountRepository.get({
+            const candidate = await this.accountService.get({
                 target : AccountTarget.id,
                 value : dto.email
             })
@@ -28,7 +48,7 @@ export class AuthService {
 
             const hasedPassword =await this.hashPass(dto.password);
         
-            const acc = await accountRepository.create({
+            const acc = await this.accountService.create({
                 id : uuid.v4(),
                 dateOfBirth : dto.dateOfBirth,
                 email : dto.email,
@@ -36,13 +56,14 @@ export class AuthService {
                 password : hasedPassword
             });
         
-            const activationLink = await activationService.createLink({
+            const activationLink = await this.activationService.createLink({
                 accountId : String(acc.id),
-                value : uuid.v4() 
+                link : uuid.v4() 
             });
-            await accountRoleRepository.create({accountId : acc.id, roleId : "1"});
 
-            const sendMAil = await mailService.sendActivationMail({
+            await this.accountRoleRepository.create({accountId : acc.id, roleId : 1});
+
+            const sendMAil = await this.mailService.sendActivationMail({
                 email : acc.email,
                 value : activationLink
             });
@@ -52,7 +73,7 @@ export class AuthService {
             }
 
 
-            const token : IJwtToken = tokenService.generateTokens({
+            const token : IJwtToken = this.tokenService.generateTokens({
                 email : acc.email,
                 id : acc.id,
                 roles : ["USER"]
@@ -64,6 +85,7 @@ export class AuthService {
                 jwt : token
             };
         } catch(e) {
+            console.log(e);
             throw ApiError.InternalError(e);
         }
     }
@@ -71,7 +93,7 @@ export class AuthService {
     async login(dto : LoginDto) : Promise<LoginResponce> {
         try {
 
-            const acc = await accountRepository.get({
+            const acc = await this.accountService.get({
                 target : AccountTarget.email,
                 value : dto.email
             });
@@ -84,7 +106,7 @@ export class AuthService {
             if (acc[0].password !== hasedPassword) {
                 throw ApiError.BadRequest("Wrong password");
             }
-            const roles = await accountRepository.getRolesNames(acc[0].id);
+            const roles = await this.accountService.getRolesNames(acc[0].id);
 
             const payload : ITokenPayload = {
                 email : acc[0].email,
@@ -92,7 +114,7 @@ export class AuthService {
                 roles : roles
             }
 
-            const token : IJwtToken = tokenService.generateTokens(payload);
+            const token : IJwtToken = this.tokenService.generateTokens(payload);
 
             return {
                 email : acc[0].email,
@@ -111,16 +133,16 @@ export class AuthService {
         if (!refreshToken) {
             throw ApiError.Unathorized();
         }
-        const payload = tokenService.validateRefersh(refreshToken);
+        const payload = this.tokenService.validateRefersh(refreshToken);
         if (!payload) {
             throw ApiError.Unathorized();
         }        
-        const acc = await accountRepository.get({value : payload.id, target : AccountTarget.id});
+        const acc = await this.accountService.get({value : payload.id, target : AccountTarget.id});
         if (acc.length !== 1) {
             throw ApiError.BadRequest("Account not found");
         }
-        const roles = await accountRepository.getRolesNames(acc[0].id);
-        const token : IJwtToken = tokenService.generateTokens({
+        const roles = await this.accountService.getRolesNames(acc[0].id);
+        const token : IJwtToken = this.tokenService.generateTokens({
             email : acc[0].email,
             id : acc[0].id,
             roles : roles

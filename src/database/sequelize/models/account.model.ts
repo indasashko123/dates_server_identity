@@ -1,10 +1,11 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
-import { IAccountCreationAttribute } from "../../../interfaces/creationAttibutes";
+import { IAccountCreationAttribute } from "../../../app";
+import { Account } from "../../../domain";
 
 
 
 @Table({modelName : "account"})
-export class AccountModel extends Model<AccountModel, IAccountCreationAttribute> {
+export class AccountModel extends Model<Account, IAccountCreationAttribute> {
 
     @Column({type : DataType.STRING, unique : true, primaryKey : true})
     id : string;

@@ -1,5 +1,5 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
-import { IRoleCreationAttribute } from "../../../interfaces/creationAttibutes";
+import { IRoleCreationAttribute } from "../../../app";
 
 
 

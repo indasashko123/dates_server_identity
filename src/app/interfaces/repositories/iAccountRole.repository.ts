@@ -1,9 +1,9 @@
-import { CreateAccountRoleDto } from "../../components/dto";
-import { AccountRoleModel } from "../../database";
+import { CreateAccountRoleDto } from "../../dto";
+import { accountRole } from "../../../domain";
 
 
 
 
 export interface IAccountRoleRepository {
-    create (dto : CreateAccountRoleDto) : Promise<AccountRoleModel>;
+    create (dto : CreateAccountRoleDto) : Promise<accountRole>;
 }

@@ -4,4 +4,5 @@ import { authMiddleware } from "../middlewares";
 
 export const confirmRouter = Router();
 
-confirmRouter.post('/activate/:link',authMiddleware, confirmController.confirmEmail);
+confirmRouter.get('/activate/:link', confirmController.confirmEmail);
+confirmRouter.get('/get/:target&:value', confirmController.get);

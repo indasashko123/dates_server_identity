@@ -1,5 +1,5 @@
 import { Request } from "express"
-import { IAccountData } from "../../interfaces"
+import { IAccountData } from "../../../app"
 
 
 export interface ExtendRequest extends Request {

@@ -1,19 +1,21 @@
 import { IActivationCreationAttribute, IActivationRepository,GetActivationQuerry,ActivationTarget } from "../../../app"
+import { Activation } from "../../../domain";
 import { ActivationModel } from "../models";
 
 
 
 export class ActivationRepository implements IActivationRepository{
     
-    async create(dto: IActivationCreationAttribute): Promise<ActivationModel> {
+    async create(dto: IActivationCreationAttribute): Promise<Activation> {
         return await ActivationModel.create(dto);
     }
 
-    async get(querry: GetActivationQuerry): Promise<ActivationModel[]> {
+    async get(querry: GetActivationQuerry): Promise<Activation[]> {
         if (querry.target === ActivationTarget.id) {
             return await ActivationModel.findAll({where : { id : querry.value}});
         }
         const condition : any = {};
+
 
         if (!querry.page) {
             condition.offset = 0;
@@ -29,18 +31,21 @@ export class ActivationRepository implements IActivationRepository{
 
 
         if (querry.target === ActivationTarget.accountId) {
+            condition.where =  {};
             condition.where.accountId = querry.value;
         }
-        if (querry.target == ActivationTarget.value) {
-            condition.where.value = querry.value;
-        }
-
+        if (querry.target == ActivationTarget.link) {
+            condition.where =  {};
+            condition.where.link = querry.value;
+        } 
+        console.log(condition);
         const accs = await ActivationModel.findAll(condition);
         return accs;
     }
   
-    async update (data : ActivationModel) : Promise<ActivationModel> {
+    async update (data : Activation) : Promise<Activation> {
         await ActivationModel.update(data,{where : {id : data.id}});
-        return await ActivationModel.findByPk(data.id);
+        const responce = (await ActivationModel.findByPk(data.id)) as Activation;
+        return responce; 
     }
 }

@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+
 export const dataBaseConfig = {
     provider : process.env.DATABASE_MAIN_PROVIDER,
     port : process.env.DATABASE_MAIN_PORT,

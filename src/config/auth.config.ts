@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+
 export const authConfig = {
     accessTokenSalt : process.env.AUTH_ACCESS_TOKEN_SALT,
     refreshTokenSalt : process.env.AUTH_REFRESH_TOKEN_SALT,

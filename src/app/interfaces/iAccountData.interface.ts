@@ -1,7 +1,5 @@
-
-
 export interface IAccountData {
-    id : string;
-    email : string;
+    id :string;
+    email :string;
     roles : string[];
 }

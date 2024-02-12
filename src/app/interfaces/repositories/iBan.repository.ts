@@ -1,11 +1,11 @@
-import { BanModel } from "../../database";
+import { Ban } from "../../../domain";
 import { IBanCreationAttribute } from "../creationAttibutes";
 
 
 
 export interface IBanRepository {
-    create ( dto : IBanCreationAttribute ) : Promise<BanModel>;
+    create ( dto : IBanCreationAttribute ) : Promise<Ban>;
     delete ( id : string ) : Promise<boolean>;
-    update ( account : BanModel) : Promise<BanModel>;
-    get( querry : any) : Promise<BanModel[]>;
+    update ( account : Ban) : Promise<Ban>;
+    get( querry : any) : Promise<Ban[]>;
 }

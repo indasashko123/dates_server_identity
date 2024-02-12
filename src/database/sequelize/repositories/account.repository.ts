@@ -1,5 +1,6 @@
-import { accountRoleRepository, roleRepository } from ".";
-import { CreateAccountRoleDto,AccountTarget,GetAccountQuerry,IAccountCreationAttribute,IAccountRepository } from "../../../app";
+import { CreateAccountRoleDto,AccountTarget,GetAccountQuerry,IAccountCreationAttribute,IAccountRepository, IAccountRoleRepository } from "../../../app";
+import { IRoleRepository } from "../../../app/interfaces/repositories/iRole.repository";
+import { Account, accountRole } from "../../../domain";
 import { AccountModel, AccountRoleModel } from "../models";
 
 
@@ -7,7 +8,13 @@ import { AccountModel, AccountRoleModel } from "../models";
 
 export class AccountRepository implements IAccountRepository {
     
-    async create(dto: IAccountCreationAttribute): Promise<AccountModel> {
+
+    constructor (
+       private readonly roleRepository  :IRoleRepository,
+       private readonly accountRoleRepository : IAccountRoleRepository
+    ) {}
+
+    async create(dto: IAccountCreationAttribute): Promise<Account> {
         return await AccountModel.create(dto);
     }
 
@@ -17,12 +24,12 @@ export class AccountRepository implements IAccountRepository {
         return false;
     }
 
-    async update(account: AccountModel): Promise<AccountModel> {
+    async update(account: Account): Promise<Account> {
         await AccountModel.update(account,{where : {id : account.id}});
         return await AccountModel.findByPk(account.id);
     }
 
-    async get(querry: GetAccountQuerry): Promise<AccountModel[]> {
+    async get(querry: GetAccountQuerry): Promise<Account[]> {
         if (querry.target === AccountTarget.id) {
             return await AccountModel.findAll({where : { id : querry.value}});
         }
@@ -65,7 +72,7 @@ export class AccountRepository implements IAccountRepository {
         
         const roleIds = accountRoles.map(accountRole => accountRole.roleId);
 
-        const roles = await roleRepository.get({ 
+        const roles = await this.roleRepository.get({ 
             id : roleIds
         });
 
@@ -75,8 +82,8 @@ export class AccountRepository implements IAccountRepository {
         return roleNames;
     }
     
-    async createRole (dto : CreateAccountRoleDto) : Promise<AccountRoleModel> {
-        return accountRoleRepository.create(dto);
+    async createRole (dto : CreateAccountRoleDto) : Promise<accountRole> {
+        return this.accountRoleRepository.create(dto);
     }
 
     

@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+
 export const oauthStrategyConfig =  {
     google : {
         clientId : process.env.GOOGLE_OAUTH_CLIENTID,

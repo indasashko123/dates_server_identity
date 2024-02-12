@@ -4,10 +4,11 @@ import { mainConfig } from "../../../config";
 import { SendActivationDto } from "../../dto";
 
 import SMTPTransport from "nodemailer/lib/smtp-transport";
+import { IMailService } from "../../interfaces";
 
 
 
-export class MailService {
+export class MailService implements IMailService{
  
     private readonly transporter : Transporter<SMTPTransport.SentMessageInfo> ;
     constructor () {

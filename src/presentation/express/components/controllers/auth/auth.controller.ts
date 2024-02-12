@@ -14,8 +14,9 @@ export class AuthController {
     async registration(req : ExtendRequest, res : Response, next : NextFunction) {
         try {
             const errors = validationResult(req);
-            if (errors.isEmpty()) {0
+            if (!errors.isEmpty()) {0
                 return next(ApiError.BadRequest("Validation error",errors.array()));
+                console.log(errors);
             }
             const data = req.body as CreateAccountDto;
             const responce = await authService.registration(data);

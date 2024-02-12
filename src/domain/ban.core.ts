@@ -1,4 +1,4 @@
-export interface Ban {
+export class Ban {
     id : number;
     userId : string;
     moderatorId : string;

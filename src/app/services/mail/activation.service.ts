@@ -1,35 +1,42 @@
-import { ActivationTarget, ApiError } from "../../../common";
-import { activationRepository } from "../../../database";
+import { ActivationTarget } from "../../enums";
 import { ActivationCreateDto, ConfirmEmailDto } from "../../dto";
+import { ApiError } from "../../../presentation/express/exceptions";
+import { IActivationRepository, IActivationService } from "../../interfaces";
+import { GetActivationQuerry } from "../../querry";
+import { Activation } from "../../../domain";
 
 
 
 
-export class ActivationService {
+export class ActivationService implements IActivationService {
 
+
+    constructor (
+        private readonly activationRepository : IActivationRepository
+    ){}
 
     async createLink (dto : ActivationCreateDto) : Promise<string> {
-        try {
-            const activation = await activationRepository.create(dto);
-            return activation.value;    
-        } catch(e) {
-            throw ApiError.InternalError(e);
-        }
+        const activation = await this.activationRepository.create(dto);
+        return activation.link;    
     }
 
     async confirmEmail(dto : ConfirmEmailDto) : Promise<void> {
-        try {
-            const activation = await activationRepository.get({
-                target : ActivationTarget.value,
-                value : dto.link
-            });
-            if (activation[0].value !== dto.link) {
-                throw ApiError.BadRequest("Wrong activvation link");
-            }
-            activation[0].isEmailConfirmed = true;
-            await activationRepository.update(activation[0]);
-        } catch(e) {
-            throw ApiError.InternalError(e);
+        const activation = await this.activationRepository.get({
+            target : ActivationTarget.link,
+            value : dto.link
+        });
+        if (activation.length !== 1) {
+            throw ApiError.BadRequest("Activation not found");    
         }
+            
+        if (activation[0].link !== dto.link) {
+            throw ApiError.BadRequest("Wrong activvation link");
+        }
+        activation[0].isEmailConfirmed = true;
+        await this.activationRepository.update(activation[0]);
+    }
+
+    async get(querry : GetActivationQuerry) : Promise<Activation[]> {
+        return await this.activationRepository.get(querry);
     }
 }

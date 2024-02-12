@@ -1,5 +1,5 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
-import { IAccountRoleCreationAttribute } from "../../../interfaces/creationAttibutes";
+import { IAccountRoleCreationAttribute } from "../../../app";
 
 
 
@@ -11,6 +11,6 @@ export class AccountRoleModel extends Model<AccountRoleModel,IAccountRoleCreatio
     @Column({type : DataType.STRING})
     accountId : string;
 
-    @Column({type : DataType.STRING})
-    roleId : string;
+    @Column({type : DataType.INTEGER})
+    roleId : number;
 }

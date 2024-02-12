@@ -1,4 +1,4 @@
-import { IJwtToken } from "../../interfaces/jwt";
+import { IJwtToken } from "../../../../app/interfaces/jwt";
 
 export class LoginResponce {
     id : string;
