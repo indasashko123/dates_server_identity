@@ -5,6 +5,16 @@ import { AccountModel, AccountRoleModel } from "../models";
 
 
 
+interface conditions {
+    limit? : number;
+    offset? : number;
+    where? : {
+        id? : number | string;
+        isDeleted? : boolean;
+        email? : string;
+    }
+}
+
 
 export class AccountRepository implements IAccountRepository {
     
@@ -15,7 +25,7 @@ export class AccountRepository implements IAccountRepository {
     ) {}
 
     async create(dto: IAccountCreationAttribute): Promise<Account> {
-        return await AccountModel.create(dto);
+        return await AccountModel.create(dto) as Account;
     }
 
     async delete(id: string): Promise<boolean> {
@@ -25,19 +35,30 @@ export class AccountRepository implements IAccountRepository {
     }
 
     async update(account: Account): Promise<Account> {
-        await AccountModel.update(account,{where : {id : account.id}});
-        return await AccountModel.findByPk(account.id);
+
+        await AccountModel.update({
+            dateOfBirth : account.dateOfBirth,
+            email : account.email,
+            isDeleted : account.isDeleted,
+            password : account.password    
+        },{where : {id : account.id}});
+        return await AccountModel.findByPk(account.id) as Account;
     }
 
-    async get(querry: GetAccountQuerry): Promise<Account[]> {
+    async get(querry?: GetAccountQuerry ): Promise<Account[]> {
+        if (!querry) {
+            return await AccountModel.findAll({where : {isDeleted : false}});
+        }
         if (querry.target === AccountTarget.id) {
             return await AccountModel.findAll({where : { id : querry.value}});
         }
-        const condition : any = {};
+        let condition : conditions = {
+            where : {}
+        };
 
         if (!querry.deleted) {
             condition.where.isDeleted = false;
-        } 
+        }
 
         if (!querry.page) {
             condition.offset = 0;
@@ -55,11 +76,8 @@ export class AccountRepository implements IAccountRepository {
         if (querry.target === AccountTarget.email) {
             condition.where.email = querry.value;
         }
-        if (querry.target == AccountTarget.login) {
-            condition.where.login = querry.value;
-        }
 
-        const accs = await AccountModel.findAll(condition);
+        const accs = await AccountModel.findAll(condition) as Account[];
         return accs;
     }
  
@@ -77,15 +95,11 @@ export class AccountRepository implements IAccountRepository {
         });
 
         const roleNames = roles.map(role => role.name);
-
-
         return roleNames;
     }
     
     async createRole (dto : CreateAccountRoleDto) : Promise<accountRole> {
         return this.accountRoleRepository.create(dto);
-    }
-
-    
+    }    
 } 
 
