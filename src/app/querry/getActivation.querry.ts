@@ -3,5 +3,5 @@ import { BaseQuerry } from "./baseQuerry";
 
 
 export class GetActivationQuerry extends BaseQuerry {
-    target? : ActivationTarget;
+    target? : ActivationTarget | string;
 }

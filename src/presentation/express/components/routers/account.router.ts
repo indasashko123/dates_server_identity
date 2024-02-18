@@ -7,7 +7,7 @@ import { authMiddleware, roleAccessMiddleware } from "../middlewares";
 export const accountRouter = Router();
 
 
-accountRouter.post('/reg',
+accountRouter.get('/get',
     query('page').optional().isNumeric(),
     query('perPage').optional().isNumeric(),
     query('target').optional().isString(),
@@ -16,5 +16,4 @@ accountRouter.post('/reg',
     authMiddleware,
     roleAccessMiddleware(['ADMIN']),
     accountController.get);
-
-
+    

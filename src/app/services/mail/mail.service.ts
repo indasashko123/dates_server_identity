@@ -1,7 +1,7 @@
 import {Transporter, createTransport} from "nodemailer";
 
 import { mainConfig } from "../../../config";
-import { SendActivationDto } from "../../dto";
+import { SendActivationDto, SendResetPasswordDto } from "../../dto";
 
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 import { IMailService } from "../../interfaces";
@@ -38,6 +38,24 @@ export class MailService implements IMailService{
           return false;
        }
     }
-
+    async sendResetPasswordMail (data : SendResetPasswordDto) : Promise<boolean> {
+     try {
+          await this.transporter.sendMail({
+               from : mainConfig.mail.mailAccount,
+               to : data.email,
+               text : "",
+               html : `
+                    <div>
+                        <h1>Ссылка для восстановления пароля</h1>
+                        <a href=${mainConfig.server.host}/api/auth/confirm/link:${data.value}> link </a>
+                    </div>
+               `
+          })
+          return true;
+       } catch (e) {
+          return false;
+       }
+     
+    }
 
 }

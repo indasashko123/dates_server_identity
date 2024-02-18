@@ -1,7 +1,7 @@
 import * as bcrypt from "bcrypt";
 import * as uuid from "uuid";
 
-import { CreateAccountDto, LoginDto } from "../../dto";
+import { ChangePassDto, CreateAccountDto, LoginDto } from "../../dto";
 import { AccountTarget } from "../../enums";
 import { mainConfig } from "../../../config";
 import {    ITokenPayload,
@@ -11,10 +11,12 @@ import {    ITokenPayload,
             IActivationService, 
             IMailService, 
             ITokenService, 
-            IAccountRoleRepository } from "../../interfaces";
+            IAccountRoleRepository, 
+            IPasswordService} from "../../interfaces";
 
 import { ApiError } from "../../../presentation/express/exceptions";
 import { LoginResponce } from "../../../presentation/express/components/responces";
+import { ResurrectPasswordDto } from "../../dto/account/resurrectPassword.dto";
 
 
 
@@ -27,7 +29,8 @@ export class AuthService implements IAuthService {
         private readonly activationService : IActivationService,
         private readonly mailService : IMailService,
         private readonly tokenService : ITokenService,
-        private readonly accountRoleRepository : IAccountRoleRepository
+        private readonly accountRoleRepository : IAccountRoleRepository,
+        private readonly passwordService  : IPasswordService 
     ) {
 
     }
@@ -153,6 +156,61 @@ export class AuthService implements IAuthService {
             jwt : token
         };
     }
+
+    async changePass( dto : ChangePassDto): Promise<void> {
+        await this.passwordService.isRequestActive(dto);
+        const oldPass = await this.hashPass(dto.oldPassword);
+        const acc = await this.accountService.get({target : AccountTarget.id, value : dto.accountId});
+        if (!acc || acc.length !== 1 ) {
+            throw ApiError.NotFound();
+        }
+        
+        if (acc[0].password !== oldPass) {
+            throw ApiError.BadRequest("Wrong old Password");
+        }
+        await this.accountService.update({...acc[0], password : dto.newPassword});
+        await this.passwordService.deleteResetRequest(acc[0].id);
+    }
+
+    async resetPasswordRequest (id : string) : Promise<void> {
+        await this.passwordService.createResetRequest(id);
+    }
+
+    async forgotPass(id: string): Promise<void> {
+        const acc = (await this.accountService.get({target : AccountTarget.id, value : id}))[0];
+        await this.accountService.update({...acc, password : "xxxxxxxx"});
+        const link = await this.passwordService.createResetLink(acc.id);
+        await this.mailService.sendResetPasswordMail({email : acc.email, value : link.link});
+    }
+
+    async confirResetPassword (link : string) : Promise<void> {
+        const resetlink = await this.passwordService.getResetLink(link);
+        if (!resetlink) {
+            throw ApiError.NotFound();
+        }
+        const acc = (await this.accountService.get({target : AccountTarget.id, value : resetlink.accountId}))[0];
+        if (!acc) {
+            throw ApiError.NotFound();
+        }
+        if (acc.password !== "xxxxxxxx") {
+            throw ApiError.BadRequest("");
+        }
+        await this.passwordService.confirmLink(resetlink);
+    }
+    
+    async resurrectPassword(dto: ResurrectPasswordDto): Promise<void> {
+        const acc = (await this.accountService.get({target  : AccountTarget.id , value : dto.accountId}))[0];
+        if (!acc) {
+            throw ApiError.NotFound();
+        }
+        const hashPass = await this.hashPass(dto.password);
+        await this.accountService.update({
+            ...acc, password : hashPass
+        })
+    }
+
+
+
 
 
     private async hashPass(pass : string) : Promise<string> {

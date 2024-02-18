@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { confirmController } from "../controllers";
-import { authMiddleware } from "../middlewares";
+import { roleAccessMiddleware } from "../middlewares";
 
 export const confirmRouter = Router();
 
 confirmRouter.get('/activate/:link', confirmController.confirmEmail);
-confirmRouter.get('/get/:target&:value', confirmController.get);
+confirmRouter.get('/get/:target&:value', roleAccessMiddleware(["ADMIN"]), confirmController.get);

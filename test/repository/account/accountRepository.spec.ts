@@ -58,6 +58,13 @@ describe("account service test", ()=> {
         expect(accs[1].id).toBe(dtos[1].id);
     });
 
+    it ("get all no querry", async()=> {
+        const accs = await accountRepository.get();
+        
+        expect(accs.length).toBe(dtos.length);
+    });
+
+
     it ("get all 2 max, page2", async()=> {
         const accs = await accountRepository.get({
             perPage : 2,

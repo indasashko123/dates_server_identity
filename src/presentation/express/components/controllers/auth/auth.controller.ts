@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 
 
-import { authService,LoginDto,CreateAccountDto } from "../../../../../app";
+import { authService,LoginDto,CreateAccountDto, ChangePassDto } from "../../../../../app";
 import { ExtendRequest } from "../../../extensions";
 import { ApiError } from "../../../exceptions"; 
 
@@ -71,6 +71,64 @@ export class AuthController {
             return res.json(responce).status(200);    
         } catch(e) {
             next(e); 
+        }
+    }
+
+    async resetPasswordRequest(req : ExtendRequest, res : Response, next : NextFunction) {
+        try {
+           const acc = req.account;
+           await authService.resetPasswordRequest(acc.id);
+        } catch(e) {
+            next(e);
+        }
+    }
+
+    async changePassword (req : ExtendRequest, res : Response, next : NextFunction) {
+        try {
+            const acc = req.account;
+            const {oldPassword, newPassword} = req.body;
+            await authService.changePass({accountId : acc.id, oldPassword,newPassword});
+            const {refreshToken} = req.cookies;
+            await authService.logout(refreshToken);
+            res.clearCookie('refreshToken');
+            /// TODO : registration or login page redirect
+            return res.redirect("REG|LOGIN PAGE");
+         } catch(e) {
+            next(e);
+         }
+    }
+
+    async forgotPass (req : ExtendRequest, res : Response, next : NextFunction) {
+        try {
+            const acc = req.account;
+            const {refreshToken} = req.cookies;
+            await authService.logout(refreshToken);
+            res.clearCookie('refreshToken');
+            await authService.forgotPass(acc.id);
+            return res.status(200);
+        } catch(e) {
+            next(e);
+        }
+    }
+
+    async confirResetPassword (req : ExtendRequest, res : Response, next : NextFunction) {
+        try {
+            const link = req.params.link;
+            await authService.confirResetPassword(link);
+            return res.redirect("RESSURRECT PASSWORD PAGE");
+        } catch(e) {
+            next(e);
+        }
+    }
+
+    async resurrectPassword (req : ExtendRequest, res : Response, next : NextFunction) {
+        try {
+            const {password} = req.body;
+            const accountId = req.params.accountId;
+            await authService.resurrectPassword({password, accountId});
+            return res.redirect("RESSURRECT PASSWORD PAGE");
+        } catch(e) {
+            next(e);
         }
     }
 }

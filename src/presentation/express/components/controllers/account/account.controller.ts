@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { GetAccountQuerry } from "../../../../../app";
+import { ChangePassDto, GetAccountQuerry, authService } from "../../../../../app";
 import { validationResult } from "express-validator";
 import { ApiError } from "../../../exceptions";
 import { ExtendRequest } from "../../../extensions";
@@ -22,4 +22,14 @@ export class AccountController {
             next(e);
         }
     }
+
+    async forgotPass(req : ExtendRequest, res : Response, next : NextFunction) {
+        try {
+           
+        } catch(e) {
+            next(e);
+        }
+    }
+
+
 }

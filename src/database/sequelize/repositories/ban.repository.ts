@@ -1,31 +1,38 @@
 import { IBanCreationAttribute, IBanRepository,GetBanQuerry,BanTarget } from "../../../app";
+import { Ban } from "../../../domain";
 import { BanModel } from "../models";
 
-
+interface conditions {
+    limit? : number;
+    offset? : number;
+    where? : {
+        id? : number | string;
+        userId? : string ;
+        moderatorId? : string;
+    }
+}
 
 
 export class BanRepository implements IBanRepository  {
-    async create(dto: IBanCreationAttribute): Promise<BanModel> {
+    async create(dto: IBanCreationAttribute): Promise<Ban> {
         const ban  = await BanModel.create(dto);
         return ban;
     }
 
-    async delete(id: string): Promise<boolean> {
+    async delete(id: string | number): Promise<boolean> {
         const delAcc = await BanModel.destroy({where : {id : id}});
         if (delAcc) return true;
         return false;
     }
 
-    async update(account: BanModel): Promise<BanModel> {
-        await BanModel.update(account,{where : {id : account.id}});
-        return await BanModel.findByPk(account.id);
-    }
-
-    async get(querry: GetBanQuerry): Promise<BanModel[]> {
+    async get(querry?: GetBanQuerry): Promise<Ban[]> {
+        if (!querry) {
+            return await BanModel.findAll();
+        }
         if (querry.target === BanTarget.id) {
             return await BanModel.findAll({where : { id : querry.value}});
         }
-        const condition : any = {};
+        const condition : conditions = { where : {}};
 
         if (!querry.page) {
             condition.offset = 0;
@@ -41,10 +48,10 @@ export class BanRepository implements IBanRepository  {
 
 
         if (querry.target === BanTarget.moderatorId) {
-            condition.where.moderatorId = querry.value;
+            condition.where.moderatorId = String(querry.value);
         }
         if (querry.target == BanTarget.userId) {
-            condition.where.userId = querry.value;
+            condition.where.userId = String(querry.value);
         }
 
         const accs = await BanModel.findAll(condition);

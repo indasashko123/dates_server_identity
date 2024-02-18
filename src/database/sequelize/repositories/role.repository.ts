@@ -1,26 +1,55 @@
-import { IRoleCreationAttribute } from "../../../app";
+import { IRoleCreationAttribute, RoleTarget } from "../../../app";
 import { IRoleRepository } from "../../../app/interfaces/repositories/iRole.repository";
+import { GetRoleQuerry } from "../../../app/querry/getRole.querry";
+import { Role } from "../../../domain";
 import { RoleModel } from "../models";
 
-
+interface conditions {
+    limit? : number;
+    offset? : number;
+    where? : {
+        id? : number | string;
+        name? : string;
+    }
+}
 
 export class RoleRepository implements IRoleRepository{
     
-    async create(dto: IRoleCreationAttribute): Promise<RoleModel> {
+    async create(dto: IRoleCreationAttribute): Promise<Role> {
         return await RoleModel.create(dto);
     }
 
-    async delete(id: string): Promise<boolean> {
+    async delete(id: number): Promise<boolean> {
         const delAcc = await RoleModel.destroy({where : {id : id}});
         if (delAcc) return true;
         return false;
     }
 
-    async update(role: RoleModel): Promise<RoleModel> {
-        await RoleModel.update(role,{where : {id : role.id}});
-        return await RoleModel.findByPk(role.id);
-    }
-    async get(querry : any) : Promise<RoleModel[]> {
-        return await RoleModel.findAll({where : querry})
+    async get(querry? : GetRoleQuerry) : Promise<Role[]> {
+        if (!querry) {
+            return await RoleModel.findAll();
+        }
+        if (querry.target === RoleTarget.id) {
+            return await RoleModel.findAll({where : { id : querry.value}});
+        }
+        const condition : conditions = { where : {}};
+
+        if (!querry.page) {
+            condition.offset = 0;
+        } else {
+            condition.offset = (querry.page-1)*querry.perPage;
+        }
+
+        if (!querry.perPage) {
+            condition.limit = 25;
+        } else {
+            condition.limit = querry.perPage;
+        }
+        
+        if (querry.target === RoleTarget.name) {
+            condition.where.name = String(querry.value);
+        }
+
+        return await RoleModel.findAll(condition)
     }
 }

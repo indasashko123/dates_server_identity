@@ -2,7 +2,15 @@ import { IActivationCreationAttribute, IActivationRepository,GetActivationQuerry
 import { Activation } from "../../../domain";
 import { ActivationModel } from "../models";
 
-
+interface conditions {
+    limit? : number;
+    offset? : number;
+    where? : {
+        id? : number | string;
+        link? : string;
+        accountId? : string;
+    }
+}
 
 export class ActivationRepository implements IActivationRepository{
     
@@ -10,11 +18,14 @@ export class ActivationRepository implements IActivationRepository{
         return await ActivationModel.create(dto);
     }
 
-    async get(querry: GetActivationQuerry): Promise<Activation[]> {
+    async get(querry?: GetActivationQuerry): Promise<Activation[]> {
+        if (!querry) {
+            return await ActivationModel.findAll();
+        }
         if (querry.target === ActivationTarget.id) {
             return await ActivationModel.findAll({where : { id : querry.value}});
         }
-        const condition : any = {};
+        const condition : conditions = { where : {}};
 
 
         if (!querry.page) {
@@ -32,20 +43,21 @@ export class ActivationRepository implements IActivationRepository{
 
         if (querry.target === ActivationTarget.accountId) {
             condition.where =  {};
-            condition.where.accountId = querry.value;
+            condition.where.accountId = String(querry.value);
         }
         if (querry.target == ActivationTarget.link) {
             condition.where =  {};
-            condition.where.link = querry.value;
+            condition.where.link = String(querry.value);
         } 
-        console.log(condition);
         const accs = await ActivationModel.findAll(condition);
         return accs;
     }
   
     async update (data : Activation) : Promise<Activation> {
-        await ActivationModel.update(data,{where : {id : data.id}});
-        const responce = (await ActivationModel.findByPk(data.id)) as Activation;
+        await ActivationModel.update({
+            isEmailConfirmed : data.isEmailConfirmed
+        },{where : {id : data.id}});
+        const responce = (await ActivationModel.findByPk(data.id)) as Activation;   
         return responce; 
     }
 }

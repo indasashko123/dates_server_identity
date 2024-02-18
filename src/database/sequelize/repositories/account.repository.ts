@@ -1,6 +1,6 @@
-import { CreateAccountRoleDto,AccountTarget,GetAccountQuerry,IAccountCreationAttribute,IAccountRepository, IAccountRoleRepository } from "../../../app";
+import { CreateAccountRoleDto,AccountTarget,GetAccountQuerry,IAccountCreationAttribute,IAccountRepository, IAccountRoleRepository, RoleTarget, AccountRoleTarget } from "../../../app";
 import { IRoleRepository } from "../../../app/interfaces/repositories/iRole.repository";
-import { Account, accountRole } from "../../../domain";
+import { Account, AccountRole } from "../../../domain";
 import { AccountModel, AccountRoleModel } from "../models";
 
 
@@ -74,7 +74,7 @@ export class AccountRepository implements IAccountRepository {
 
 
         if (querry.target === AccountTarget.email) {
-            condition.where.email = querry.value;
+            condition.where.email = String(querry.value);
         }
 
         const accs = await AccountModel.findAll(condition) as Account[];
@@ -82,23 +82,25 @@ export class AccountRepository implements IAccountRepository {
     }
  
     async getRolesNames(accountId : string) : Promise<string[]> {
-        const accountRoles = await AccountRoleModel.findAll({
-            where : {
-                accountId 
-            }
-        });
         
+        const accountRoles =await this.accountRoleRepository.get({
+            target : AccountRoleTarget.accountId,
+            value : accountId
+        })
+
         const roleIds = accountRoles.map(accountRole => accountRole.roleId);
 
         const roles = await this.roleRepository.get({ 
-            id : roleIds
+            target :  RoleTarget.id,
+            value : roleIds
         });
 
         const roleNames = roles.map(role => role.name);
+        
         return roleNames;
     }
     
-    async createRole (dto : CreateAccountRoleDto) : Promise<accountRole> {
+    async createRole (dto : CreateAccountRoleDto) : Promise<AccountRole> {
         return this.accountRoleRepository.create(dto);
     }    
 } 

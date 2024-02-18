@@ -2,10 +2,13 @@ import { Dialect } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { mainConfig } from "../../config";
 import { AccountModel } from "./models/account.model";
-import { AccountRoleModel, ActivationModel, RoleModel } from "./models";
+import { AccountRoleModel, 
+        ActivationModel, 
+        BanModel, 
+        ResetPasswordRequestModel, 
+        RoleModel } from "./models";
 import * as bcrypt from "bcrypt";
 import * as uuid from "uuid";
-
 
 export const sequelize = new Sequelize({
     database : mainConfig.database.databaseName,
@@ -18,7 +21,9 @@ export const sequelize = new Sequelize({
         AccountModel,
         ActivationModel,
         AccountRoleModel,
-        RoleModel
+        RoleModel,
+        BanModel,
+        ResetPasswordRequestModel
     ],
 });
 

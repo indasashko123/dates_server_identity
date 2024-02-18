@@ -22,4 +22,7 @@ export class AccountService implements IAccountService{
         return await this.accountRepository.getRolesNames(id);
     }
 
+    async update(account: Account): Promise<Account> {
+        return await this.accountRepository.update(account);    
+    }
 }

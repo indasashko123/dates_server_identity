@@ -26,4 +26,8 @@ export class ApiError extends Error {
     static Forbidden(errors? : any[]) : ApiError {
         return new ApiError(403,"No access", errors);
     }
+
+    static NotFound (errors? : any[]) : ApiError {
+        return new ApiError(404, "Not found", errors);
+    }
 }

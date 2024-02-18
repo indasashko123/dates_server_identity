@@ -19,3 +19,13 @@ authRouter.post('/login',
 authRouter.post('/logout', authMiddleware, authController.logout);
 
 authRouter.post('/refresh', authController.refresh);
+
+
+authRouter.post('/resetpass', authMiddleware, authController.resetPasswordRequest);
+
+
+authRouter.post('/changepass',  
+                authMiddleware,
+                body('newPassword').isString().isLength({min : 6, max : 32}),
+                body('oldPassword').isString().isLength({min : 6, max : 32}),
+                authController.changePassword);
