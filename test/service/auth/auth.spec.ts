@@ -110,4 +110,12 @@ describe("auth service " , ()=> {
 
         }
     });
+
+    it ("reset password request", async ()=> {
+        const tokenResponse = await authService.registration({dateOfBirth : "1", email : "1", gender : "1", password : "1"});
+        await authService.resetPasswordRequest(tokenResponse.id);
+        await authService.changePass({accountId : tokenResponse.id, newPassword : "2", oldPassword : "1"});
+        const data : LoginResponce = await authService.login({email : "1", password : "2"});  
+        expect(data.email).toBe("1");    
+    })
 })

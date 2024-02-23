@@ -17,6 +17,7 @@ import {    ITokenPayload,
 import { ApiError } from "../../exceptions";
 import { LoginResponce } from "../../dto/responces";
 import { ResurrectPasswordDto } from "../../dto/account/resurrectPassword.dto";
+import { Account } from "../../../domain";
 
 
 
@@ -128,7 +129,6 @@ export class AuthService implements IAuthService {
                 roles : roles
             };
         } catch(e) {
-            console.log(e);
             throw ApiError.InternalError(e);
         }
     }
@@ -174,12 +174,22 @@ export class AuthService implements IAuthService {
         if (!acc || acc.length !== 1 ) {
             throw ApiError.NotFound();
         }
-        const isOldPass = await bcrypt.compare(acc[0].password, dto.oldPassword);
+        const isOldPass = await bcrypt.compare( dto.oldPassword, acc[0].password);
 
         if (!isOldPass) {
             throw ApiError.BadRequest("Wrong old Password");
         }
-        await this.accountService.update({...acc[0], password : dto.newPassword});
+        const newPassword = await this.hashPass(dto.newPassword);
+        const accountToUpdate : Account= {
+            id : acc[0].id,
+            dateOfBirth : acc[0].dateOfBirth,
+            email : acc[0].email,
+            gender : acc[0].gender,
+            isDeleted : acc[0].isDeleted,
+            password : newPassword
+        }
+
+        await this.accountService.update(accountToUpdate);
         await this.passwordService.deleteResetRequest(acc[0].id);
     }
 

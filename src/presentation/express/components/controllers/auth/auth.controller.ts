@@ -33,7 +33,6 @@ export class AuthController {
             const jwt = responce.jwt;
             return res.json({...jwt, accessTokenExpired :  mainConfig.auth.accessExpiredTime}).status(200);    
         } catch(e) {
-            console.log(e);
             next(e);
         }
     }    

@@ -8,7 +8,9 @@ export class ApiError extends Error {
     constructor(status? : number | string, message? : string, errors? : any[] | any) {
         super(message);
         this.status = status;
-        this.errors.push(errors);
+        if (errors) {
+            this.errors = new Array<any>(errors)
+        }
     }
 
     static Unathorized() : ApiError {

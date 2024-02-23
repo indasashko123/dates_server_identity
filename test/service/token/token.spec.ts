@@ -15,7 +15,8 @@ describe("token service " , ()=> {
         const payload : ITokenPayload = {
         email : "johnySins@xxx.com",
         id,
-        roles : ["USER","ACTOR"]
+        roles : ["USER","ACTOR"],
+        activate : false
        }
        const tokens : IJwtToken = tokenService.generateTokens(payload);
 

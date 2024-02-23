@@ -35,7 +35,6 @@ export class AccountRepository implements IAccountRepository {
     }
 
     async update(account: Account): Promise<Account> {
-
         await AccountModel.update({
             dateOfBirth : account.dateOfBirth,
             email : account.email,
@@ -47,11 +46,13 @@ export class AccountRepository implements IAccountRepository {
 
     async get(querry?: GetAccountQuerry ): Promise<Account[]> {
         if (!querry) {
-            return await AccountModel.findAll({where : {isDeleted : false}});
+            const accs =  await AccountModel.findAll({where : {isDeleted : false}}) as Account[];
+            return accs;
         }
         if (querry.target === AccountTarget.id) {
             const deleted = !querry.deleted ? false : true;
-            return await AccountModel.findAll({where : { id : querry.value, isDeleted : deleted}});
+            const accs = await AccountModel.findAll({where : { id : querry.value, isDeleted : deleted}}) as Account[];
+            return accs;
         }
         let condition : conditions = {
             where : {}
