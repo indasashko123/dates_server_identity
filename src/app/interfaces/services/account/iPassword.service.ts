@@ -9,5 +9,6 @@ export interface IPasswordService {
     deleteResetRequest(accountId : string) : Promise<boolean>;
     createResetLink( id : string) : Promise<ResetPasswordLink>;
     getResetLink(link : string) : Promise<ResetPasswordLink>;
+    getResetLinkByAccount(accountId : string) : Promise<ResetPasswordLink[]>;
     confirmLink(link : ResetPasswordLink) : Promise<ResetPasswordLink>;
 }

@@ -1,31 +1,43 @@
 import { Router } from "express";
 import { authController } from "../controllers";
-import {body} from "express-validator";
+import {body, query} from "express-validator";
 import { authMiddleware } from "../middlewares";
 
 
 export const authRouter = Router();
 
-authRouter.post('/reg',
+authRouter.post('/sign-up',
     body('email').isEmail(),
     body('password').isString().isLength({min : 6, max : 32}),
-    authController.registration);
+    authController.singUp);
 
-authRouter.post('/login',
+authRouter.post('/sign-in',
     body('email').isEmail(),
     body('password').isString().isLength({min : 6, max : 32}),
-    authController.login);
+    authController.singIn);
 
-authRouter.post('/logout', authMiddleware, authController.logout);
+authRouter.post('/sing-out', authMiddleware, authController.signOut);
 
 authRouter.post('/refresh', authController.refresh);
 
 
-authRouter.post('/resetpass', authMiddleware, authController.resetPasswordRequest);
+authRouter.post('/reset-password', authMiddleware, authController.resetPasswordRequest);
 
 
-authRouter.post('/changepass',  
+authRouter.post('/change-password',  
                 authMiddleware,
                 body('newPassword').isString().isLength({min : 6, max : 32}),
                 body('oldPassword').isString().isLength({min : 6, max : 32}),
                 authController.changePassword);
+
+authRouter.post("/forgot-password", authController.forgotPassword);
+
+
+authRouter.post('/confirm-reset-password',
+                query('link').isString(),
+                authController.confirmResurrectPassword);
+
+authRouter.post("/ressurectpass",
+                body("password").isString().isLength({min : 6, max : 32}),
+                query("accountId").isString(),
+                authController.resurrectPassword);

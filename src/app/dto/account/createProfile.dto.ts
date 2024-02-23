@@ -1,6 +1,4 @@
-
-export class Profile {
-    id : number;
+export class CreateProfileDto {
     name : string;
     city : string;
     searchTarget : string;

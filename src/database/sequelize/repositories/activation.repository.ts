@@ -15,15 +15,15 @@ interface conditions {
 export class ActivationRepository implements IActivationRepository{
     
     async create(dto: IActivationCreationAttribute): Promise<Activation> {
-        return await ActivationModel.create(dto);
+        return await ActivationModel.create(dto) as Activation;
     }
 
     async get(querry?: GetActivationQuerry): Promise<Activation[]> {
         if (!querry) {
-            return await ActivationModel.findAll();
+            return await ActivationModel.findAll() as Activation[];
         }
         if (querry.target === ActivationTarget.id) {
-            return await ActivationModel.findAll({where : { id : querry.value}});
+            return await ActivationModel.findAll({where : { id : querry.value}}) as Activation[];
         }
         const condition : conditions = { where : {}};
 
@@ -49,7 +49,7 @@ export class ActivationRepository implements IActivationRepository{
             condition.where =  {};
             condition.where.link = String(querry.value);
         } 
-        const accs = await ActivationModel.findAll(condition);
+        const accs = await ActivationModel.findAll(condition) as Activation[];
         return accs;
     }
   

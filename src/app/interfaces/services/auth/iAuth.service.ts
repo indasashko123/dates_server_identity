@@ -1,5 +1,5 @@
-import { LoginResponce } from "../../../../presentation/express/components/responces";
-import { ChangePassDto, CreateAccountDto, LoginDto } from "../../../dto";
+import { LoginResponce } from "../../../dto/responces";
+import { ChangePassDto, ConfirmEmailDto, CreateAccountDto, LoginDto } from "../../../dto";
 import { ResurrectPasswordDto } from "../../../dto/account/resurrectPassword.dto";
 
 export interface IAuthService {
@@ -11,6 +11,6 @@ export interface IAuthService {
     changePass (dto : ChangePassDto) : Promise<void>;
     resetPasswordRequest (id : string) : Promise<void>;
     forgotPass (id : string) : Promise<void>;
-    confirResetPassword (link : string) : Promise<void>;
+    confirmResurrectPassword (link : string) : Promise<void>;
     resurrectPassword(dto : ResurrectPasswordDto) : Promise<void>;
 }

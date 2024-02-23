@@ -50,7 +50,8 @@ export class AccountRepository implements IAccountRepository {
             return await AccountModel.findAll({where : {isDeleted : false}});
         }
         if (querry.target === AccountTarget.id) {
-            return await AccountModel.findAll({where : { id : querry.value}});
+            const deleted = !querry.deleted ? false : true;
+            return await AccountModel.findAll({where : { id : querry.value, isDeleted : deleted}});
         }
         let condition : conditions = {
             where : {}
@@ -58,7 +59,7 @@ export class AccountRepository implements IAccountRepository {
 
         if (!querry.deleted) {
             condition.where.isDeleted = false;
-        }
+        } 
 
         if (!querry.page) {
             condition.offset = 0;

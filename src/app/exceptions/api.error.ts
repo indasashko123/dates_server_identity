@@ -5,10 +5,10 @@ export class ApiError extends Error {
     status : number | string;
     errors : any[];
 
-    constructor(status? : number | string, message? : string, errors? : any[]) {
+    constructor(status? : number | string, message? : string, errors? : any[] | any) {
         super(message);
         this.status = status;
-        this.errors = errors;
+        this.errors.push(errors);
     }
 
     static Unathorized() : ApiError {

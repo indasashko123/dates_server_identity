@@ -1,5 +1,5 @@
 import { Ban } from "../../../domain";
-import { ApiError } from "../../../presentation/express/exceptions";
+import { ApiError } from "../../exceptions";
 import { IBanCreationAttribute, IBanRepository, IBanService } from "../../interfaces";
 
 

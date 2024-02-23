@@ -10,7 +10,7 @@ export class AccountService implements IAccountService{
 
     }
 
-    async get(querry : GetAccountQuerry) : Promise<Account[]> {
+    async get(querry? : GetAccountQuerry) : Promise<Account[]> {
         return await this.accountRepository.get(querry);
     }
 

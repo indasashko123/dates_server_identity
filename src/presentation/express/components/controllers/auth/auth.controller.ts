@@ -4,33 +4,41 @@ import { validationResult } from "express-validator";
 
 import { authService,LoginDto,CreateAccountDto, ChangePassDto } from "../../../../../app";
 import { ExtendRequest } from "../../../extensions";
-import { ApiError } from "../../../exceptions"; 
+import { ApiError } from "../../../../../app/exceptions"; 
+import { mainConfig } from "../../../../../config";
 
+const refreshConfig = {
+    httpOnly : true,
+    maxAge : Number(mainConfig.auth.refreshExpiredTime)
+}
 
+/*
+ * Auth controller
+*/
 export class AuthController {
-
-
-
-    async registration(req : ExtendRequest, res : Response, next : NextFunction) {
+    
+    /*
+    * Sign up
+    */
+    async singUp(req : ExtendRequest, res : Response, next : NextFunction) {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {0
                 return next(ApiError.BadRequest("Validation error",errors.array()));
-                console.log(errors);
             }
             const data = req.body as CreateAccountDto;
             const responce = await authService.registration(data);
             res.cookie('refreshToken', responce.jwt.refreshToken, 
-                {   
-                    httpOnly : true
-                });
-            return res.json(responce).status(200);    
+            refreshConfig);
+            const jwt = responce.jwt;
+            return res.json({...jwt, accessTokenExpired :  mainConfig.auth.accessExpiredTime}).status(200);    
         } catch(e) {
+            console.log(e);
             next(e);
         }
     }    
  
-    async login(req : ExtendRequest, res : Response, next : NextFunction) {
+    async singIn(req : ExtendRequest, res : Response, next : NextFunction) {
         try {
             const errors = validationResult(req);
             if (errors.isEmpty()) {0
@@ -39,16 +47,16 @@ export class AuthController {
             const data = req.body as LoginDto;
             const responce = await authService.login(data);
             res.cookie('refreshToken', responce.jwt.refreshToken, 
-                {   
-                    httpOnly : true
-                });
-            return res.json(responce).status(200);    
+                refreshConfig);
+            const jwt = responce.jwt;
+            return res.json({...jwt, accessTokenExpired :  mainConfig.auth.accessExpiredTime}).status(200);    
         } catch(e) {
             next(e);
         }
     }
 
-    async logout (req : ExtendRequest, res : Response, next : NextFunction) {
+
+    async signOut (req : ExtendRequest, res : Response, next : NextFunction) {
         try {
             const {refreshToken} = req.cookies;
             await authService.logout(refreshToken);
@@ -65,11 +73,10 @@ export class AuthController {
             res.clearCookie('refreshToken');
             const responce = await authService.refresh(refreshToken);
             res.cookie('refreshToken', responce.jwt.refreshToken, 
-            {   
-                httpOnly : true
-            });
-            return res.json(responce).status(200);    
-        } catch(e) {
+            refreshConfig);
+            const jwt = responce.jwt;
+            return res.json({...jwt, accessTokenExpired :  mainConfig.auth.accessExpiredTime}).status(200);  
+       } catch(e) {
             next(e); 
         }
     }
@@ -78,6 +85,7 @@ export class AuthController {
         try {
            const acc = req.account;
            await authService.resetPasswordRequest(acc.id);
+           return res.status(200).json({message : "ok"});
         } catch(e) {
             next(e);
         }
@@ -98,23 +106,22 @@ export class AuthController {
          }
     }
 
-    async forgotPass (req : ExtendRequest, res : Response, next : NextFunction) {
+    async forgotPassword (req : ExtendRequest, res : Response, next : NextFunction) {
         try {
-            const acc = req.account;
-            const {refreshToken} = req.cookies;
-            await authService.logout(refreshToken);
-            res.clearCookie('refreshToken');
-            await authService.forgotPass(acc.id);
+            const email = req.body.email;
+            await authService.forgotPass(email);
             return res.status(200);
         } catch(e) {
             next(e);
         }
     }
 
-    async confirResetPassword (req : ExtendRequest, res : Response, next : NextFunction) {
+    async confirmResurrectPassword (req : ExtendRequest, res : Response, next : NextFunction) {
         try {
             const link = req.params.link;
-            await authService.confirResetPassword(link);
+            await authService.confirmResurrectPassword(link);
+            /// TODO : Log-out all accounts
+            /// TODO : RESSURECT PAGE
             return res.redirect("RESSURRECT PASSWORD PAGE");
         } catch(e) {
             next(e);
@@ -126,6 +133,10 @@ export class AuthController {
             const {password} = req.body;
             const accountId = req.params.accountId;
             await authService.resurrectPassword({password, accountId});
+            const {refreshToken} = req.cookies;
+            await authService.logout(refreshToken);
+            res.clearCookie('refreshToken');
+             /// TODO : RESSURECT PAGE
             return res.redirect("RESSURRECT PASSWORD PAGE");
         } catch(e) {
             next(e);

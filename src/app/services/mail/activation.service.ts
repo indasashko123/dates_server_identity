@@ -1,6 +1,6 @@
 import { ActivationTarget } from "../../enums";
 import { ActivationCreateDto, ConfirmEmailDto } from "../../dto";
-import { ApiError } from "../../../presentation/express/exceptions";
+import { ApiError } from "../../exceptions";
 import { IActivationRepository, IActivationService } from "../../interfaces";
 import { GetActivationQuerry } from "../../querry";
 import { Activation } from "../../../domain";
@@ -30,13 +30,13 @@ export class ActivationService implements IActivationService {
         }
             
         if (activation[0].link !== dto.link) {
-            throw ApiError.BadRequest("Wrong activvation link");
+            throw ApiError.BadRequest("Wrong activation link");
         }
         activation[0].isEmailConfirmed = true;
         await this.activationRepository.update(activation[0]);
     }
 
-    async get(querry : GetActivationQuerry) : Promise<Activation[]> {
+    async get(querry? : GetActivationQuerry) : Promise<Activation[]> {
         return await this.activationRepository.get(querry);
     }
 }

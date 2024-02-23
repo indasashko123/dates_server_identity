@@ -25,6 +25,7 @@ export const sequelize = new Sequelize({
         BanModel,
         ResetPasswordRequestModel
     ],
+    logging : false
 });
 
 

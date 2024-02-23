@@ -1,17 +1,11 @@
 import { NextFunction, Response } from "express";
-import { ApiError } from "../../exceptions";
+import { ApiError } from "../../../../app/exceptions";
 import { ExtendRequest } from "../../extensions";
 
 export const roleAccessMiddleware = (roles : string[]) => {
     return function (req : ExtendRequest,res : Response,next : NextFunction) {
-        if (req.method === "OPTION") {
-            next();
-        }
         try {
             const acc = req.account;
-            if (!acc) {
-                return next(ApiError.Unathorized());
-            }
             let access : boolean = false;
             acc.roles.forEach(role => {
                 if (roles.includes(role)) {

@@ -55,7 +55,5 @@ export class MailService implements IMailService{
        } catch (e) {
           return false;
        }
-     
     }
-
 }

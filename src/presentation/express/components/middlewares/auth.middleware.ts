@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiError } from "../../exceptions"; 
+import { ApiError } from "../../../../app/exceptions"; 
 import { tokenService } from "../../../../app";
 import { ExtendRequest } from "../../extensions";
 

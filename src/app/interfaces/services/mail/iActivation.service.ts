@@ -6,5 +6,5 @@ export interface IActivationService {
 
     createLink (dto : ActivationCreateDto) : Promise<string> ;
     confirmEmail(dto : ConfirmEmailDto) : Promise<void>;
-    get(querry : GetActivationQuerry) : Promise<Activation[]>;
+    get(querry? : GetActivationQuerry) : Promise<Activation[]>;
 }

@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import { ResetPasswordLink, ResetPasswordRequest } from "../../../domain";
-import { ApiError } from "../../../presentation/express/exceptions";
+import { ApiError } from "../../exceptions";
 import { ChangePassDto } from "../../dto";
 import { ResetPasswordLinkTarget, ResetPasswordRequestTarget } from "../../enums";
 import { IPasswordService, IResetPasswordLinkRepository, IResetPasswordRequestRepository } from "../../interfaces";
@@ -27,10 +27,10 @@ export class PasswordService implements IPasswordService {
         const resetRequest = await this.resetPasswordRequestRepository.get({
             target : ResetPasswordRequestTarget.accountId, value : dto.accountId});
         if (!resetRequest || resetRequest.length !== 1) {
-            throw ApiError.NotFound();
+            return false;
         }
-        if (Number(resetRequest[0].endDate) > Date.now()) {
-            throw ApiError.BadRequest("Time is out");
+        if (Number(resetRequest[0].endDate) < Date.now()) {
+            return false;
         }
         return true;
     }
@@ -48,6 +48,9 @@ export class PasswordService implements IPasswordService {
 
     async getResetLink(link : string) : Promise<ResetPasswordLink> {
         return (await this.resetPasswordLinkRepository.get({target : ResetPasswordLinkTarget.link, value : link}))[0];
+    }
+    async getResetLinkByAccount(accountId : string) : Promise<ResetPasswordLink[]> {
+        return (await this.resetPasswordLinkRepository.get({target : ResetPasswordLinkTarget.accountId, value : accountId}));
     }
 
     async confirmLink(link : ResetPasswordLink) : Promise<ResetPasswordLink> {

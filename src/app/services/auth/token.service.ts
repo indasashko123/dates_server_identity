@@ -8,7 +8,8 @@ export class TokenService implements ITokenService{
     generateTokens (payload : ITokenPayload) : IJwtToken {
         return {
             accessToken : this.generateAccessToken(payload),
-            refreshToken : this.generateRefreshToken(payload)
+            refreshToken : this.generateRefreshToken(payload),
+            accessExpired : mainConfig.auth.accessExpiredTime
         };
     }
 
