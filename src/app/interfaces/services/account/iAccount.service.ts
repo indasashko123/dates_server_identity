@@ -10,5 +10,4 @@ export interface IAccountService {
     create ( dto : IAccountCreationAttribute ) : Promise<Account>;
     getRolesNames(id : string) : Promise<string[]>;
     update(account : Account) : Promise<Account>;
-
 }

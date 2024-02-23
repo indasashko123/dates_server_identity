@@ -15,8 +15,11 @@ export class ProfileModel extends Model<ProfileModel, IProfileCreationAttribute>
     city : string;
 
     @Column({type : DataType.STRING, allowNull : false})
-    searchTarget : string;
+    search : string;
 
     @Column({type : DataType.TEXT, allowNull : false})
     about : string;    
+
+    @Column({type :DataType.BOOLEAN, defaultValue : false})
+    isDeleted : boolean
 }

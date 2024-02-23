@@ -1,6 +1,6 @@
 export interface IProfileCreationAttribute {
     name : string;
     city : string;
-    searchTarget : string;
+    search : string;
     about : string;    
 }

@@ -3,6 +3,7 @@ export class Profile {
     id : number;
     name : string;
     city : string;
-    searchTarget : string;
+    search : string;
     about : string;    
+    isDeleted : boolean
 }

@@ -1,5 +1,5 @@
 
 
-export class ProfileController {
+export class ProfileService {
     
 }
