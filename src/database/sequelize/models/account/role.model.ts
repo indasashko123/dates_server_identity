@@ -1,6 +1,6 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
-import { IRoleCreationAttribute } from "../../../app";
-import { Role } from "../../../domain";
+import { IRoleCreationAttribute } from "../../../../app";
+import { Role } from "../../../../domain";
 
 
 

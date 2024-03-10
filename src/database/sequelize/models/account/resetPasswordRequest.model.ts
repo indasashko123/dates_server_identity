@@ -1,6 +1,6 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
-import { IResetPasswordRequestCreationAttribute } from "../../../app";
-import { ResetPasswordRequest } from "../../../domain";
+import { IResetPasswordRequestCreationAttribute } from "../../../../app";
+import { ResetPasswordRequest } from "../../../../domain";
 
 
 

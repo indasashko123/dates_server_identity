@@ -13,6 +13,7 @@ import {
         SessionModel} from "./models";
 import * as bcrypt from "bcrypt";
 import * as uuid from "uuid";
+import { ShowModel } from "./models/content/show.model";
 
 export const sequelize = new Sequelize({
     database : mainConfig.database.databaseName,
@@ -30,7 +31,8 @@ export const sequelize = new Sequelize({
         ResetPasswordLinkModel,         
         ResetPasswordRequestModel,
         RoleModel,
-        SessionModel
+        SessionModel,
+        ShowModel
     ],
     logging : false
 });

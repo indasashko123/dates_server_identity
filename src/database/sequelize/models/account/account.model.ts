@@ -1,6 +1,6 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
-import { IAccountCreationAttribute } from "../../../app";
-import { Account } from "../../../domain";
+import { IAccountCreationAttribute } from "../../../../app";
+import { Account } from "../../../../domain";
 
 
 

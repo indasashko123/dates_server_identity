@@ -1,1 +1,2 @@
-export * from "./iContent.repository";
+export * from "./iProfile.repository";
+export * from "./iShow.repository";

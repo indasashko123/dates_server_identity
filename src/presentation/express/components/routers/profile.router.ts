@@ -3,9 +3,7 @@ import { profileController } from "../controllers";
 import {query, body} from "express-validator";
 import { authMiddleware, roleAccessMiddleware } from "../middlewares";
 
-
 export const profileRouter = Router();
-
 
 profileRouter.post('/',
     authMiddleware,
@@ -40,4 +38,3 @@ profileRouter.delete("/",
     body("id").isNumeric,
     roleAccessMiddleware(["USER"]),
     profileController.delete);
-

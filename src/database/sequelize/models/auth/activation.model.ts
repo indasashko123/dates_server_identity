@@ -1,6 +1,6 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
-import { IActivationCreationAttribute } from "../../../app";
-import { Activation } from "../../../domain";
+import { IActivationCreationAttribute } from "../../../../app";
+import { Activation } from "../../../../domain";
 
 
 

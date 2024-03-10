@@ -1,6 +1,6 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
-import { IBanCreationAttribute } from "../../../app";
-import { Ban } from "../../../domain";
+import { IBanCreationAttribute } from "../../../../app";
+import { Ban } from "../../../../domain";
 
 
 @Table({modelName : "ban"})

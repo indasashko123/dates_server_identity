@@ -1,7 +1,6 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
-import { IProfileCreationAttribute } from "../../../app";
-import { Profile } from "../../../domain";
-import { Col } from "sequelize/types/utils";
+import { IProfileCreationAttribute } from "../../../../app";
+import { Profile } from "../../../../domain";
 
 
 @Table({modelName : "profile"})

@@ -1,6 +1,6 @@
 import { GetSessionQuerry, ISessionCreationAttribute, ISessionRepository, SessionTarget } from "../../../../app";
 import { Session } from "../../../../domain";
-import { SessionModel } from "../../models/session.model";
+import { SessionModel } from "../../models";
 
 interface conditions {
     limit? : number;

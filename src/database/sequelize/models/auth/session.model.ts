@@ -1,6 +1,6 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
-import { ISessionCreationAttribute } from "../../../app";
-import { Session } from "../../../domain";
+import { ISessionCreationAttribute } from "../../../../app";
+import { Session } from "../../../../domain";
 
 
 
