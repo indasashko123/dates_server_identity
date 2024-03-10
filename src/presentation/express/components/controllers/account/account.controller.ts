@@ -1,10 +1,8 @@
 import { NextFunction, Response } from "express";
-import Fingerprint from "express-fingerprint";
-import { GetAccountQuerry, authService } from "../../../../../app";
 import { validationResult } from "express-validator";
-import { ApiError } from "../../../../../app/exceptions";
+
+import { GetAccountQuerry,ApiError,accountService } from "../../../../../app";
 import { ExtendRequest } from "../../../extensions";
-import { accountService } from "../../../../../app";
 
 
 

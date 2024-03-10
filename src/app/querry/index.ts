@@ -6,3 +6,5 @@ export * from "./getActivation.querry";
 export * from "./resetPasswordLink.querry";
 export * from "./ResetPasswordRequest.querry";
 export * from "./getSession.querry";
+export * from "./getProfile.querry";
+export * from "./getRole.querry";

@@ -1,6 +1,7 @@
 import {
         AccountRepository, AccountRoleRepository, ActivationRepository, 
-        BanRepository, ResetPasswordRequestRepository, RoleRepository,ResetPasswordLinkRepository } from "./repositories";
+        BanRepository, ResetPasswordRequestRepository, RoleRepository,ResetPasswordLinkRepository, 
+        SessionRepository} from "./repositories";
 
 export * from "./connection";
 export * from "./repositories";
@@ -17,3 +18,4 @@ export const accountRepository = new AccountRepository(
 
 export const resetPasswordRequestRepository = new ResetPasswordRequestRepository(); 
 export const resetPasswordLinkRepository = new ResetPasswordLinkRepository();
+export const sessionRepository = new SessionRepository();

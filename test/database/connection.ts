@@ -1,6 +1,10 @@
 import { Sequelize } from "sequelize-typescript";
-import { AccountModel, AccountRoleModel, ActivationModel, BanModel, ResetPasswordLinkModel, ResetPasswordRequestModel, RoleModel } from '../../src/database';
-import { ResetPasswordRequest } from "../../src/domain";
+import { 
+  AccountModel, AccountRoleModel, 
+  ActivationModel, BanModel, 
+  ProfileModel, ResetPasswordLinkModel, 
+  ResetPasswordRequestModel, RoleModel, 
+  SessionModel} from '../../src/database';
 
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
@@ -8,12 +12,14 @@ export const sequelize = new Sequelize({
   logging : false,
   models: [
     AccountModel,
-    ActivationModel,
     AccountRoleModel,
-    RoleModel,
+    ActivationModel,
     BanModel,
-    ResetPasswordLinkModel,
-    ResetPasswordRequestModel
+    ProfileModel,
+    ResetPasswordLinkModel,         
+    ResetPasswordRequestModel,
+    RoleModel,
+    SessionModel
 ],});
 
 export const sync = async() => {

@@ -1,6 +1,6 @@
 import { mainConfig } from "../config";
-import { accountRepository, accountRoleRepository, activationRepository, resetPasswordLinkRepository, resetPasswordRequestRepository } from "../database";
-import { AccountService, ActivationService, AuthService, MailService, TokenService } from "./services";
+import { accountRepository, accountRoleRepository, activationRepository, resetPasswordLinkRepository, resetPasswordRequestRepository, sessionRepository } from "../database";
+import { AccountService, ActivationService, AuthService, MailService, SessionService, TokenService } from "./services";
 import { PasswordService } from "./services/account/password.service";
 import { MockMailService } from "./services/mail/mock.mail.service";
 
@@ -26,13 +26,15 @@ export const mailService = mainConfig.server.isDev? new MockMailService() : new 
 
 /// AUTH
 export const tokenService = new TokenService();
+export const sessionService = new SessionService(sessionRepository);
 export const authService = new AuthService(
     accountService,
     activationService,
     mailService,
     tokenService,
     accountRoleRepository,
-    passwordService
+    passwordService,
+    sessionService
     );
 
 

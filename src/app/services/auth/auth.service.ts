@@ -121,9 +121,9 @@ export class AuthService implements IAuthService {
                 roles : roles,
                 activate : activate[0].isEmailConfirmed
             }
-
+            await this.sessionService.deleteByfingerprint(fingerprint);
             const token : IJwtToken = this.tokenService.generateTokens(payload)
-            const session = await this.sessionService.create({fingerprint, refreshToken: token.refreshToken});
+            await this.sessionService.create({fingerprint, refreshToken: token.refreshToken});
             
             return {
                 email : acc[0].email,

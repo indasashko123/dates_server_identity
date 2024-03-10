@@ -6,8 +6,8 @@ export class MockMailService implements IMailService{
  
    async sendActivationMail (data : SendActivationDto) : Promise<boolean> {
       try {
-         console.log(`mail is - \n
-                 ${mainConfig.server.host}/confirm/activate/${data.value}`);
+         //console.log(`mail is - \n
+         //        ${mainConfig.server.host}/confirm/activate/${data.value}`);
          return true;
       } catch (e) {
          return false;
@@ -16,8 +16,8 @@ export class MockMailService implements IMailService{
 
    async sendResetPasswordMail (data : SendResetPasswordDto) : Promise<boolean> {
       try {
-         console.log(`mail is - \n
-                 ${mainConfig.server.host}/confirm/activate/${data.value}`);
+        // console.log(`mail is - \n
+        //         ${mainConfig.server.host}/confirm/activate/${data.value}`);
          return true;
       } catch (e) {
          return false;

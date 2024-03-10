@@ -1,6 +1,7 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
 import { IProfileCreationAttribute } from "../../../app";
 import { Profile } from "../../../domain";
+import { Col } from "sequelize/types/utils";
 
 
 @Table({modelName : "profile"})
@@ -8,6 +9,9 @@ export class ProfileModel extends Model<Profile, IProfileCreationAttribute> {
     
     @Column({type : DataType.INTEGER, autoIncrement : true,unique : true, primaryKey : true})
     id : number;
+ 
+    @Column ({type : DataType.STRING, allowNull : false})
+    accountId : string;
 
     @Column({type : DataType.STRING, allowNull : false})
     name : string;
@@ -16,7 +20,7 @@ export class ProfileModel extends Model<Profile, IProfileCreationAttribute> {
     city : string;
 
     @Column({type : DataType.STRING, allowNull : false})
-    search : string;
+    genderSearch : string;
 
     @Column({type : DataType.TEXT, allowNull : false})
     about : string;    

@@ -1,7 +1,7 @@
-import { AccountService, AccountTarget, ActivationService, AuthService, IAccountService, IAuthService, ITokenPayload, ITokenService, TokenService } from "../../../src/app";
+import { AccountService, AccountTarget, ActivationService, AuthService, IAccountService, IAuthService, ITokenPayload, ITokenService, SessionService, TokenService } from "../../../src/app";
 import { PasswordService } from "../../../src/app/services/account/password.service";
 import { MockMailService } from "../../../src/app/services/mail/mock.mail.service";
-import { AccountRepository, AccountRoleRepository, ActivationRepository, ResetPasswordLinkRepository, ResetPasswordRequestRepository, RoleRepository } from "../../../src/database";
+import { AccountRepository, AccountRoleRepository, ActivationRepository, ResetPasswordLinkRepository, ResetPasswordRequestRepository, RoleRepository, SessionRepository } from "../../../src/database";
 import { LoginResponce } from "../../../src/app/dto/responces";
 import { sync } from "../../database";
 import { advanceTo, clear } from 'jest-date-mock';
@@ -29,7 +29,8 @@ describe("auth service " , ()=> {
         tokenService = new TokenService();
         const resetPasswordLinkRepository = new ResetPasswordLinkRepository();
         const resetPasswordRequestRepository = new ResetPasswordRequestRepository();
-
+        const sessionRepository = new SessionRepository();
+        const sessionService = new SessionService(sessionRepository);
         const passwordService = new PasswordService(resetPasswordRequestRepository,resetPasswordLinkRepository);
         
         authService = new AuthService(
@@ -37,7 +38,9 @@ describe("auth service " , ()=> {
             activationService,mailService, 
             tokenService, 
             accountRoleRepository,
-            passwordService );
+            passwordService,
+            sessionService
+            );
     });
 
 
@@ -47,7 +50,12 @@ describe("auth service " , ()=> {
     });
 
     it("registration", async()=> {
-        const data : LoginResponce = await authService.registration({dateOfBirth : "1", email : "1", gender : "1", password : "1"});
+        const data : LoginResponce = await authService.registration({
+            dateOfBirth : "1", 
+            email : "1", 
+            gender : "1", 
+            password : "1"},
+            "fingerPrint");
         const acc = (await accountService.get({target : AccountTarget.id, value : data.id}))[0];
         expect(acc.email).toBe("1");
 
@@ -69,8 +77,13 @@ describe("auth service " , ()=> {
     });
 
     it ("login", async()=> {
-        await authService.registration({dateOfBirth : "1", email : "1", gender : "1", password : "1"});
-        const data : LoginResponce = await authService.login({email : "1", password : "1"});  
+        await authService.registration({
+            dateOfBirth : "1", 
+            email : "1", 
+            gender : "1", 
+            password : "1"},
+            "fingerPrint");
+        const data : LoginResponce = await authService.login({email : "1", password : "1"}, "fingerPrint");  
 
 
         const accessPayload : ITokenPayload = tokenService.validateAccess(data.jwt.accessToken);
@@ -91,8 +104,13 @@ describe("auth service " , ()=> {
     });
 
     it ("refresh", async()=> {
-        const tokenResponse = await authService.registration({dateOfBirth : "1", email : "1", gender : "1", password : "1"});
-        const data : LoginResponce = await authService.refresh(tokenResponse.jwt.refreshToken);  
+        const tokenResponse = await authService.registration({
+            dateOfBirth : "1", 
+            email : "1", 
+            gender : "1", 
+            password : "1"},
+            "fingerPrint");
+        const data : LoginResponce = await authService.refresh(tokenResponse.jwt.refreshToken, "fingerPrint");  
 
         const accessPayload : ITokenPayload = tokenService.validateAccess(data.jwt.accessToken);
         expect(accessPayload.email).toBe("1");
@@ -112,10 +130,21 @@ describe("auth service " , ()=> {
     });
 
     it ("reset password request", async ()=> {
-        const tokenResponse = await authService.registration({dateOfBirth : "1", email : "1", gender : "1", password : "1"});
+        const tokenResponse = await authService.registration({
+            dateOfBirth : "1", 
+            email : "1", 
+            gender : "1", 
+            password : "1"},
+            "fingerPrint");
+        
+        
+        
         await authService.resetPasswordRequest(tokenResponse.id);
         await authService.changePass({accountId : tokenResponse.id, newPassword : "2", oldPassword : "1"});
-        const data : LoginResponce = await authService.login({email : "1", password : "2"});  
+        const data : LoginResponce = await authService.login({
+            email : "1", 
+            password : "2"},
+            "fingerPrint");  
         expect(data.email).toBe("1");    
     })
 })
