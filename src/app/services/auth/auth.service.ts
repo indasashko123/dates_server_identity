@@ -1,7 +1,9 @@
 import * as bcrypt from "bcrypt";
 import * as uuid from "uuid";
 
-import { ChangePassDto, ConfirmEmailDto, CreateAccountDto, LoginDto } from "../../dto";
+import { ChangePassDto, CreateAccountDto, LoginDto,
+         LoginResponce,ResurrectPasswordDto  
+        } from "../../dto";
 import { AccountTarget, ActivationTarget } from "../../enums";
 import { mainConfig } from "../../../config";
 import {    ITokenPayload,
@@ -12,13 +14,12 @@ import {    ITokenPayload,
             IMailService, 
             ITokenService, 
             IAccountRoleRepository, 
-            IPasswordService} from "../../interfaces";
+            IPasswordService,
+            ISessionService
+        } from "../../interfaces";
 
 import { ApiError } from "../../exceptions";
-import { LoginResponce } from "../../dto/responces";
-import { ResurrectPasswordDto } from "../../dto/account/resurrectPassword.dto";
 import { Account } from "../../../domain";
-
 
 
 
@@ -31,14 +32,15 @@ export class AuthService implements IAuthService {
         private readonly mailService : IMailService,
         private readonly tokenService : ITokenService,
         private readonly accountRoleRepository : IAccountRoleRepository,
-        private readonly passwordService  : IPasswordService 
+        private readonly passwordService  : IPasswordService,
+        private readonly sessionService : ISessionService, 
     ) {
 
     }
 
 
 
-    async registration (dto : CreateAccountDto) : Promise<LoginResponce> {
+    async registration (dto : CreateAccountDto,  fingerprint : string) : Promise<LoginResponce> {
         try {
             const candidate = await this.accountService.get({
                 target : AccountTarget.id,
@@ -82,6 +84,8 @@ export class AuthService implements IAuthService {
                 activate : false
             });
 
+            const session = await this.sessionService.create({fingerprint, refreshToken: token.refreshToken});
+
             return {
                 email : acc.email,
                 id : acc.id,
@@ -94,9 +98,8 @@ export class AuthService implements IAuthService {
         }
     }
 
-    async login(dto : LoginDto) : Promise<LoginResponce> {
+    async login(dto : LoginDto, fingerprint : string) : Promise<LoginResponce> {
         try {
-
             const acc = await this.accountService.get({
                 target : AccountTarget.email,
                 value : dto.email
@@ -119,8 +122,9 @@ export class AuthService implements IAuthService {
                 activate : activate[0].isEmailConfirmed
             }
 
-            const token : IJwtToken = this.tokenService.generateTokens(payload);
-
+            const token : IJwtToken = this.tokenService.generateTokens(payload)
+            const session = await this.sessionService.create({fingerprint, refreshToken: token.refreshToken});
+            
             return {
                 email : acc[0].email,
                 id : acc[0].id,
@@ -128,17 +132,23 @@ export class AuthService implements IAuthService {
                 activate : activate[0].isEmailConfirmed,
                 roles : roles
             };
+
         } catch(e) {
             throw ApiError.InternalError(e);
         }
     }
 
     async logout(refreshToken : string) : Promise<void> {
+        await this.sessionService.deleteByRefresh(refreshToken);
     }
  
-    async refresh (refreshToken : string) : Promise<LoginResponce> {
+    async refresh (refreshToken : string,fingerprint : string) : Promise<LoginResponce> {
         if (!refreshToken) {
             throw ApiError.Unathorized();
+        }
+        const session = await this.sessionService.get({target : "refreshToken", value : refreshToken});
+        if (!session && session[0].fingerprint != fingerprint) {
+            throw ApiError.Unathorized();    
         }
         const payload = this.tokenService.validateRefersh(refreshToken);
         if (!payload) {
@@ -150,12 +160,15 @@ export class AuthService implements IAuthService {
         }
         const roles = await this.accountService.getRolesNames(acc[0].id);
         const activation = await this.activationService.get({target : "accountId", value : acc[0].id});
+        await this.sessionService.deleteByRefresh(refreshToken);
         const token : IJwtToken = this.tokenService.generateTokens({
             email : acc[0].email,
             id : acc[0].id,
             roles : roles,
             activate : activation[0].isEmailConfirmed,
         });
+        await this.sessionService.create({fingerprint, refreshToken : token.refreshToken});
+        
         return {
             email : acc[0].email,
             id : acc[0].id,
@@ -175,7 +188,6 @@ export class AuthService implements IAuthService {
             throw ApiError.NotFound();
         }
         const isOldPass = await bcrypt.compare( dto.oldPassword, acc[0].password);
-
         if (!isOldPass) {
             throw ApiError.BadRequest("Wrong old Password");
         }
@@ -188,7 +200,6 @@ export class AuthService implements IAuthService {
             isDeleted : acc[0].isDeleted,
             password : newPassword
         }
-
         await this.accountService.update(accountToUpdate);
         await this.passwordService.deleteResetRequest(acc[0].id);
     }

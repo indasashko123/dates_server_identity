@@ -24,11 +24,12 @@ export class AuthController {
         try {
             const errors = validationResult(req);
             const { fingerprint } = req;
+            const finderPrintData : string = String(fingerprint);
             if (!errors.isEmpty()) {0
                 return next(ApiError.BadRequest("Validation error",errors.array()));
             }
             const data = req.body as CreateAccountDto;
-            const responce = await authService.registration(data);
+            const responce = await authService.registration(data,finderPrintData);
             res.cookie('refreshToken', responce.jwt.refreshToken, 
             refreshConfig);
             const jwt = responce.jwt;
@@ -44,8 +45,10 @@ export class AuthController {
             if (errors.isEmpty()) {0
                 return next(ApiError.BadRequest("Validation error",errors.array()));
             }
+            const { fingerprint } = req;
+            const finderPrintData : string = String(fingerprint);
             const data = req.body as LoginDto;
-            const responce = await authService.login(data);
+            const responce = await authService.login(data,finderPrintData);
             res.cookie('refreshToken', responce.jwt.refreshToken, 
                 refreshConfig);
             const jwt = responce.jwt;
@@ -71,7 +74,9 @@ export class AuthController {
         try {
             const {refreshToken} = req.cookies;
             res.clearCookie('refreshToken');
-            const responce = await authService.refresh(refreshToken);
+            const { fingerprint } = req;
+            const finderPrintData : string = String(fingerprint);
+            const responce = await authService.refresh(refreshToken,finderPrintData);
             res.cookie('refreshToken', responce.jwt.refreshToken, 
             refreshConfig);
             const jwt = responce.jwt;

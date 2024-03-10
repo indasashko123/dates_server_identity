@@ -5,7 +5,7 @@
       "outDir": "./dist",
       "experimentalDecorators": true,
       "esModuleInterop": true,      
-      "baseUrl": "./",      
+ /*     "baseUrl": "./",      
       "paths": {
         "@domain" : [
           "src/domain/index"
@@ -19,7 +19,8 @@
         "@config" : [
           "src/config/index"
         ],
-      }      
+      }
+  */      
     },
     "exclude": [
       "node_modules",

@@ -1,13 +1,10 @@
-import { LoginResponce } from "../../../dto/responces";
-import { ChangePassDto, ConfirmEmailDto, CreateAccountDto, LoginDto } from "../../../dto";
-import { ResurrectPasswordDto } from "../../../dto/account/resurrectPassword.dto";
+import {LoginResponce, ChangePassDto, CreateAccountDto, LoginDto,ResurrectPasswordDto } from "../../../dto";
 
 export interface IAuthService {
-    
-    registration (dto : CreateAccountDto) : Promise<LoginResponce>; 
-    login(dto : LoginDto) : Promise<LoginResponce>;
+    registration (dto : CreateAccountDto, fingerprint : string) : Promise<LoginResponce>; 
+    login(dto : LoginDto, fingerprint : string) : Promise<LoginResponce>;
     logout(refreshToken : string) : Promise<void>; 
-    refresh (refreshToken : string) : Promise<LoginResponce>;
+    refresh (refreshToken : string, fingerprint : string) : Promise<LoginResponce>;
     changePass (dto : ChangePassDto) : Promise<void>;
     resetPasswordRequest (id : string) : Promise<void>;
     forgotPass (id : string) : Promise<void>;
