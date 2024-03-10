@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { ApiError } from "../../../../app/exceptions";
+import { ApiError } from "../../../../app";
 import { ExtendRequest } from "../../extensions";
 
 export const roleAccessMiddleware = (roles : string[]) => {

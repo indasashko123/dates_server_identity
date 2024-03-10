@@ -1,9 +1,6 @@
 import {
         AccountRepository, AccountRoleRepository, ActivationRepository, 
-        BanRepository, ResetPasswordRequestRepository, RoleRepository 
-} from "./repositories";
-import { ResetPasswordLinkRepository } from "./repositories/resetPasswordLink.repository";
-
+        BanRepository, ResetPasswordRequestRepository, RoleRepository,ResetPasswordLinkRepository } from "./repositories";
 
 export * from "./connection";
 export * from "./repositories";

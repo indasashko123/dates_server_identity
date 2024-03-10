@@ -6,3 +6,4 @@ export * from "./activation.core";
 export * from "./accountRole.core";
 export * from "./resetPassRequest.core";
 export * from "./resetPasswordLink.core";
+export * from "./session.core";

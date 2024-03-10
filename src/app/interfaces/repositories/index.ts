@@ -5,3 +5,4 @@ export * from "./iBan.repository";
 export * from "./iResetPasswordRequest.repository";
 export * from "./iResetPasswordLink.repository";
 export * from "./iRole.repository";
+export * from "./iSession.repository";

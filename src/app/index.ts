@@ -4,11 +4,13 @@ import { AccountService, ActivationService, AuthService, MailService, TokenServi
 import { PasswordService } from "./services/account/password.service";
 import { MockMailService } from "./services/mail/mock.mail.service";
 
-export * from "./services";
+
+export * from "./dto";
+export * from "./enums";
+export * from "./exceptions";
 export * from "./interfaces";
 export * from "./querry";
-export * from "./enums";
-export * from "./dto";
+export * from "./services";
 
 
 
@@ -17,6 +19,7 @@ export * from "./dto";
 /// ACCOUNT
 export const accountService = new AccountService(accountRepository);
 export const passwordService = new PasswordService(resetPasswordRequestRepository,resetPasswordLinkRepository);
+
 ///MAIL
 export const activationService = new ActivationService(activationRepository);
 export const mailService = mainConfig.server.isDev? new MockMailService() : new MailService();

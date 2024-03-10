@@ -12,17 +12,18 @@ const refreshConfig = {
     maxAge : Number(mainConfig.auth.refreshExpiredTime)
 }
 
-/*
+/** 
  * Auth controller
 */
 export class AuthController {
     
-    /*
+    /** 
     * Sign up
     */
     async singUp(req : ExtendRequest, res : Response, next : NextFunction) {
         try {
             const errors = validationResult(req);
+            const { fingerprint } = req;
             if (!errors.isEmpty()) {0
                 return next(ApiError.BadRequest("Validation error",errors.array()));
             }

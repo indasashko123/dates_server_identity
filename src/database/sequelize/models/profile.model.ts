@@ -1,9 +1,10 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
 import { IProfileCreationAttribute } from "../../../app";
+import { Profile } from "../../../domain";
 
 
 @Table({modelName : "profile"})
-export class ProfileModel extends Model<ProfileModel, IProfileCreationAttribute> {
+export class ProfileModel extends Model<Profile, IProfileCreationAttribute> {
     
     @Column({type : DataType.INTEGER, autoIncrement : true,unique : true, primaryKey : true})
     id : number;

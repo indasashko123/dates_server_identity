@@ -1,12 +1,13 @@
 import { Column, DataType, Model, Table } from "sequelize-typescript";
 import { IActivationCreationAttribute } from "../../../app";
+import { Activation } from "../../../domain";
 
 
 
 
 
 @Table({modelName : "activation"})
-export class ActivationModel extends Model<ActivationModel, IActivationCreationAttribute> {
+export class ActivationModel extends Model<Activation, IActivationCreationAttribute> {
 
     @Column({type : DataType.INTEGER, unique : true, autoIncrement : true, primaryKey : true})
     id : number;

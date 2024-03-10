@@ -6,3 +6,4 @@ export * from "./accountRole";
 export * from "./activation";
 export * from "./resetPasswordRequest";
 export * from "./resetPasswordLink";
+export * from "./session";
