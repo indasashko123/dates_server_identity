@@ -1,4 +1,5 @@
-export interface IProfileCreationAttribute {
+export class UpdateProfileDto {
+    id : number;
     accountId : string;
     name : string;
     city : string;

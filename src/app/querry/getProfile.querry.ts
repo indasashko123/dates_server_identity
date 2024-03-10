@@ -3,6 +3,6 @@ import { BaseQuerry } from "./baseQuerry";
 
 
 export class GetProfileQuerry extends BaseQuerry {
-    target : ProfileTarget | string;
+    target? : ProfileTarget | string;
     isDeleted? : boolean;
 }

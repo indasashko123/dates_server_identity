@@ -2,9 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
 
 
-import { authService,LoginDto,CreateAccountDto, ChangePassDto } from "../../../../../app";
-import { ExtendRequest } from "../../../extensions";
-import { ApiError } from "../../../../../app/exceptions"; 
+import { authService,LoginDto,CreateAccountDto,ApiError  } from "../../../../../app";
+import { ExtendRequest } from "../../../extensions"; 
 import { mainConfig } from "../../../../../config";
 
 const refreshConfig = {
@@ -23,11 +22,11 @@ export class AuthController {
     async singUp(req : ExtendRequest, res : Response, next : NextFunction) {
         try {
             const errors = validationResult(req);
-            const { fingerprint } = req;
-            const finderPrintData : string = String(fingerprint);
             if (!errors.isEmpty()) {0
                 return next(ApiError.BadRequest("Validation error",errors.array()));
             }
+            const { fingerprint } = req;
+            const finderPrintData : string = String(fingerprint);
             const data = req.body as CreateAccountDto;
             const responce = await authService.registration(data,finderPrintData);
             res.cookie('refreshToken', responce.jwt.refreshToken, 

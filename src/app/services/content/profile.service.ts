@@ -1,4 +1,5 @@
 import { Profile } from "../../../domain";
+import { UpdateProfileDto } from "../../dto";
 import { ProfileTarget } from "../../enums";
 import { ApiError } from "../../exceptions";
 import { IProfileCreationAttribute, IProfileRepository, IProfileService } from "../../interfaces";
@@ -21,8 +22,12 @@ export class ProfileService implements IProfileService {
         return await this.profileRepository.create(dto);
     }
 
-    async update(profile: Profile): Promise<Profile> {
-        return await this.update(profile);
+    async update(profile: UpdateProfileDto): Promise<Profile> {
+        const profileToUpdate = (await this.profileRepository.get({target : "id", value : profile.id}))[0];
+        if (!profileToUpdate || profileToUpdate.accountId !== profile.accountId) {
+            throw ApiError.NotFound();
+        }
+        return await this.profileRepository.update({...profile, isDeleted : profileToUpdate.isDeleted});
     }
 
     async delete(id: number): Promise<boolean> {

@@ -1,9 +1,9 @@
 import { mainConfig } from "../config";
-import { accountRepository, accountRoleRepository, activationRepository, resetPasswordLinkRepository, resetPasswordRequestRepository, sessionRepository } from "../database";
+import { accountRepository, accountRoleRepository, activationRepository, profileRepository, resetPasswordLinkRepository, resetPasswordRequestRepository, sessionRepository } from "../database";
 import { AccountService, ActivationService, AuthService, MailService, SessionService, TokenService } from "./services";
 import { PasswordService } from "./services/account/password.service";
+import { ProfileService } from "./services/content";
 import { MockMailService } from "./services/mail/mock.mail.service";
-
 
 export * from "./dto";
 export * from "./enums";
@@ -11,10 +11,6 @@ export * from "./exceptions";
 export * from "./interfaces";
 export * from "./querry";
 export * from "./services";
-
-
-
-
 
 /// ACCOUNT
 export const accountService = new AccountService(accountRepository);
@@ -37,6 +33,5 @@ export const authService = new AuthService(
     sessionService
     );
 
-
-
-
+/// Content
+export const profileService = new ProfileService(profileRepository);

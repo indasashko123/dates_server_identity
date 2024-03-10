@@ -36,7 +36,6 @@ export class ProfileRepository implements IProfileRepository{
             await ProfileModel.update({
             about : profile.about,
             city : profile.city,
-            isDeleted : profile.isDeleted,
             genderSearch : profile.genderSearch,
             name : profile.name    
         },{where : {id : profile.id}});
