@@ -2,11 +2,9 @@ import { Ban } from "../../../domain";
 import { ApiError } from "../../exceptions";
 import { IBanCreationAttribute, IBanRepository, IBanService } from "../../interfaces";
 
-
 export class BanService implements IBanService{
     
-    constructor(private readonly banRepository : IBanRepository) {
-
+    constructor( private readonly banRepository : IBanRepository) {
     }
 
     async ban (data : IBanCreationAttribute) : Promise<Ban> {

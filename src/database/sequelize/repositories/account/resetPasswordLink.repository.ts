@@ -1,6 +1,6 @@
 import { 
     IResetPasswordLinkCreationAttribute, IResetPasswordLinkRepository, 
-    ResetPasswordLinkQuerry, ResetPasswordLinkTarget } from "../../../../app";
+    GetResetPasswordLinkQuerry, ResetPasswordLinkTarget } from "../../../../app";
 import { ResetPasswordLink } from "../../../../domain";
 import { ResetPasswordLinkModel } from "../../models";
 
@@ -9,7 +9,7 @@ export class ResetPasswordLinkRepository implements IResetPasswordLinkRepository
     async create (dto : IResetPasswordLinkCreationAttribute) : Promise<ResetPasswordLink> {
         return await ResetPasswordLinkModel.create(dto) as ResetPasswordLink;
     }
-    async get(querry?: ResetPasswordLinkQuerry): Promise<ResetPasswordLink[]> {
+    async get(querry?: GetResetPasswordLinkQuerry): Promise<ResetPasswordLink[]> {
         if (querry.target === ResetPasswordLinkTarget.id) {
             return await ResetPasswordLinkModel.findAll({where : {id : querry.value}}) as ResetPasswordLink[];
         }
@@ -34,3 +34,4 @@ export class ResetPasswordLinkRepository implements IResetPasswordLinkRepository
         return true;
     }
 }
+export const resetPasswordLinkRepository = new ResetPasswordLinkRepository();

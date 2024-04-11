@@ -2,6 +2,7 @@ import {
     IRoleCreationAttribute, RoleTarget, 
     IRoleRepository, GetRoleQuerry
 } from "../../../../app";
+import { QuerryCreator } from "../../../../app/utills";
 import { Role } from "../../../../domain";
 import { RoleModel } from "../../models";
 
@@ -13,6 +14,8 @@ interface conditions {
         name? : string;
     }
 }
+
+
 
 export class RoleRepository implements IRoleRepository{
     
@@ -27,30 +30,23 @@ export class RoleRepository implements IRoleRepository{
     }
 
     async get(querry? : GetRoleQuerry) : Promise<Role[]> {
-        if (!querry) {
-            return await RoleModel.findAll();
-        }
-        if (querry.target === RoleTarget.id) {
-            return await RoleModel.findAll({where : { id : querry.value}});
-        }
-        const condition : conditions = { where : {}};
-
-        if (!querry.page) {
-            condition.offset = 0;
-        } else {
-            condition.offset = (querry.page-1)*querry.perPage;
-        }
-
-        if (!querry.perPage) {
-            condition.limit = 25;
-        } else {
-            condition.limit = querry.perPage;
-        }
         
+        const condition : conditions = QuerryCreator.create({},querry) as conditions;
+    
+        if (!querry || !querry.value) {
+            return await RoleModel.findAll(condition) as Role[];
+        }
+
+        if (querry.target === RoleTarget.id) {
+            condition.where.id = Number(querry.value);
+        }
         if (querry.target === RoleTarget.name) {
             condition.where.name = String(querry.value);
         }
 
-        return await RoleModel.findAll(condition)
+        return await RoleModel.findAll(condition) as Role[];
     }
 }
+
+
+export const roleRepository = new RoleRepository();

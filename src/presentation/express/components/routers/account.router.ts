@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { accountController } from "../controllers";
 import {query} from "express-validator";
-import { authMiddleware, roleAccessMiddleware } from "../middlewares";
+import { authMiddleware, roleAccessMiddleware } from "../../../middlewares";
 
 
 export const accountRouter = Router();

@@ -2,7 +2,7 @@ import express from 'express';
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-import { ErrorMiddleware } from './components/middlewares';
+import { ErrorMiddleware } from '../middlewares';
 import { mainConfig } from '../../config';
 import { router } from "./components"
 import { connectDatabase, } from '../../database';

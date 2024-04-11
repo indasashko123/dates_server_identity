@@ -2,7 +2,7 @@ import { NextFunction, Response } from "express";
 import { validationResult } from "express-validator";
 
 import { GetAccountQuerry,ApiError,accountService } from "../../../../../app";
-import { ExtendRequest } from "../../../extensions";
+import { ExtendRequest } from "../../../../extensions";
 
 
 

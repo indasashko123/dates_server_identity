@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { profileController } from "../controllers";
 import {query, body} from "express-validator";
-import { authMiddleware, roleAccessMiddleware } from "../middlewares";
+import { authMiddleware, roleAccessMiddleware } from "../../../middlewares";
 
 export const profileRouter = Router();
 

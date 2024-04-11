@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { confirmController } from "../controllers";
-import { roleAccessMiddleware } from "../middlewares";
+import { roleAccessMiddleware } from "../../../middlewares";
 
 export const confirmRouter = Router();
 

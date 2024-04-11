@@ -1,14 +1,15 @@
 import { 
     IResetPasswordRequestCreationAttribute, IResetPasswordRequestRepository, 
-    ResetPasswordRequestTarget,ResetPasswordRequestQuerry } from "../../../../app";
+    ResetPasswordRequestTarget,GetResetPasswordRequestQuerry } from "../../../../app";
 import { ResetPasswordRequest } from "../../../../domain";
 import { ResetPasswordRequestModel } from "../../models";
+
 
 export class ResetPasswordRequestRepository implements IResetPasswordRequestRepository {
     async create (dto : IResetPasswordRequestCreationAttribute) : Promise<ResetPasswordRequest> {
         return await ResetPasswordRequestModel.create(dto) as ResetPasswordRequest;
     }
-    async get(querry?: ResetPasswordRequestQuerry): Promise<ResetPasswordRequest[]> {
+    async get(querry?: GetResetPasswordRequestQuerry): Promise<ResetPasswordRequest[]> {
         if (!querry) {
             return await ResetPasswordRequestModel.findAll() as ResetPasswordRequest[];
         }
@@ -29,3 +30,5 @@ export class ResetPasswordRequestRepository implements IResetPasswordRequestRepo
         return true;
     }
 }
+
+export const resetPasswordRequestRepository = new ResetPasswordRequestRepository(); 

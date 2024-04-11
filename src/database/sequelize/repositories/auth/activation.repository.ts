@@ -1,4 +1,7 @@
-import { IActivationCreationAttribute, IActivationRepository,GetActivationQuerry,ActivationTarget } from "../../../../app"
+import { 
+    IActivationCreationAttribute, IActivationRepository,
+    GetActivationQuerry,ActivationTarget } from "../../../../app"
+import { QuerryCreator } from "../../../../app/utills";
 import { Activation } from "../../../../domain";
 import { ActivationModel } from "../../models";
 
@@ -12,6 +15,7 @@ interface conditions {
     }
 }
 
+
 export class ActivationRepository implements IActivationRepository{
     
     async create(dto: IActivationCreationAttribute): Promise<Activation> {
@@ -19,38 +23,22 @@ export class ActivationRepository implements IActivationRepository{
     }
 
     async get(querry?: GetActivationQuerry): Promise<Activation[]> {
-        if (!querry) {
-            return await ActivationModel.findAll() as Activation[];
+
+        const condition : conditions = QuerryCreator.create({},querry) as conditions;
+        
+        if (!querry || !querry.value) {
+            return await ActivationModel.findAll(condition) as Activation[];
         }
         if (querry.target === ActivationTarget.id) {
-            return await ActivationModel.findAll({where : { id : querry.value}}) as Activation[];
+           condition.where.id = Number(querry.value);
         }
-        const condition : conditions = { where : {}};
-
-
-        if (!querry.page) {
-            condition.offset = 0;
-        } else {
-            condition.offset = (querry.page-1)*querry.perPage;
-        }
-
-        if (!querry.perPage) {
-            condition.limit = 25;
-        } else {
-            condition.limit = querry.perPage;
-        }
-
-
         if (querry.target === ActivationTarget.accountId) {
-            condition.where =  {};
             condition.where.accountId = String(querry.value);
         }
         if (querry.target == ActivationTarget.link) {
-            condition.where =  {};
             condition.where.link = String(querry.value);
         } 
-        const accs = await ActivationModel.findAll(condition) as Activation[];
-        return accs;
+        return await ActivationModel.findAll(condition) as Activation[];
     }
   
     async update (data : Activation) : Promise<Activation> {
@@ -61,3 +49,7 @@ export class ActivationRepository implements IActivationRepository{
         return responce; 
     }
 }
+
+
+
+export const activationRepository = new ActivationRepository();

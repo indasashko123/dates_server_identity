@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { GetActivationQuerry, activationService } from "../../../../../app";
 import { mainConfig } from "../../../../../config";
-import { ExtendRequest } from "../../../extensions";
+import { ExtendRequest } from "../../../../extensions";
 
 export class ConfirmController {
     

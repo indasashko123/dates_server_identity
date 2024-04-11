@@ -3,8 +3,11 @@ import {
     GetAccountQuerry,IAccountCreationAttribute,
     IAccountRepository, IAccountRoleRepository, 
     RoleTarget, AccountRoleTarget,IRoleRepository } from "../../../../app";
+import { QuerryCreator } from "../../../../app/utills";
 import { Account, AccountRole } from "../../../../domain";
 import { AccountModel} from "../../models";
+import { roleRepository } from "./role.repository";
+import { accountRoleRepository } from "./accountRole.repository";
 
 
 
@@ -16,8 +19,7 @@ interface conditions {
         isDeleted? : boolean;
         email? : string;
     }
-}
-
+} 
 
 export class AccountRepository implements IAccountRepository {
     
@@ -48,36 +50,24 @@ export class AccountRepository implements IAccountRepository {
     }
 
     async get(querry?: GetAccountQuerry ): Promise<Account[]> {
-        if (!querry) {
-            const accs =  await AccountModel.findAll({where : {isDeleted : false}}) as Account[];
+        
+        const condition : conditions = QuerryCreator.create({},querry) as conditions;
+    
+        if (!querry || !querry.value) {
+            const accs =  await AccountModel.findAll(condition) as Account[];
             return accs;
         }
         if (querry.target === AccountTarget.id) {
-            const deleted = !querry.deleted ? false : true;
-            const accs = await AccountModel.findAll({where : { id : querry.value, isDeleted : deleted}}) as Account[];
+            condition.where.isDeleted = !querry.deleted ? false : true;
+            condition.where.id = String(querry.value);
+            const accs = await AccountModel.findAll(condition) as Account[];
             return accs;
         }
-        let condition : conditions = {
-            where : {}
-        };
+        
 
         if (!querry.deleted) {
             condition.where.isDeleted = false;
         } 
-
-        if (!querry.page) {
-            condition.offset = 0;
-        } else {
-            condition.offset = (querry.page-1)*querry.perPage;
-        }
-
-        if (!querry.perPage) {
-            condition.limit = 25;
-        } else {
-            condition.limit = querry.perPage;
-        }
-
-
         if (querry.target === AccountTarget.email) {
             condition.where.email = String(querry.value);
         }
@@ -110,3 +100,7 @@ export class AccountRepository implements IAccountRepository {
     }    
 } 
 
+
+export const accountRepository = new AccountRepository(
+    roleRepository, accountRoleRepository
+);

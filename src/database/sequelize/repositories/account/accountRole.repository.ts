@@ -12,7 +12,8 @@ export class AccountRoleRepository implements IAccountRoleRepository {
     }
     
     async get (querry? : GetAccountRole) : Promise<AccountRole[]> {
-        if (!querry) {
+        
+        if (!querry || !querry.value) {
             return await AccountRoleModel.findAll();
         }
         if (querry.target === AccountRoleTarget.id) {
@@ -29,3 +30,6 @@ export class AccountRoleRepository implements IAccountRoleRepository {
         return await AccountRoleModel.findAll();    
     }
 }
+
+
+export const accountRoleRepository = new AccountRoleRepository();

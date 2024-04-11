@@ -3,11 +3,9 @@ import { IAccountCreationAttribute, IAccountRepository, IAccountService } from "
 import { Account } from "../../../domain";
 
 
-
 export class AccountService implements IAccountService{
 
     constructor(private readonly accountRepository : IAccountRepository) {
-
     }
 
     async get(querry? : GetAccountQuerry) : Promise<Account[]> {

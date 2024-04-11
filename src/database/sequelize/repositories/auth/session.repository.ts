@@ -1,4 +1,7 @@
-import { GetSessionQuerry, ISessionCreationAttribute, ISessionRepository, SessionTarget } from "../../../../app";
+import { 
+    GetSessionQuerry, ISessionCreationAttribute, 
+    ISessionRepository, SessionTarget } from "../../../../app";
+import { QuerryCreator } from "../../../../app/utills";
 import { Session } from "../../../../domain";
 import { SessionModel } from "../../models";
 
@@ -11,29 +14,17 @@ interface conditions {
         fingerprint? : string;
     }
 }
-
 export class SessionRepository implements ISessionRepository{
+    
     async get(querry : GetSessionQuerry) : Promise<Session[]> {
-        if (!querry) {
-            const sessions =  await SessionModel.findAll() as Session[];
-            return sessions;
+        
+        const condition : conditions = QuerryCreator.create({},querry) as conditions;
+        
+        if (!querry && !querry.value) {
+            return await SessionModel.findAll(condition) as Session[];
         }
         if (querry.target === SessionTarget.id) {
-            const sessions = await SessionModel.findAll({where : { id : querry.value}}) as Session[];
-            return sessions;
-        }
-        let condition : conditions = {
-            where : {}
-        };
-        if (!querry.page) {
-            condition.offset = 0;
-        } else {
-            condition.offset = (querry.page-1)*querry.perPage;
-        }
-        if (!querry.perPage) {
-            condition.limit = 25;
-        } else {
-            condition.limit = querry.perPage;
+            condition.where.id = Number(querry.value);
         }
         if (querry.target === SessionTarget.fingerprint) {
             condition.where.fingerprint = String(querry.value);
@@ -41,8 +32,7 @@ export class SessionRepository implements ISessionRepository{
         if (querry.target === SessionTarget.refreshToken) {
             condition.where.refreshToken = String(querry.value);
         }
-        const sessions = await SessionModel.findAll(condition) as Session[];
-        return sessions;
+        return await SessionModel.findAll(condition) as Session[];
     }
     
     async create(dto : ISessionCreationAttribute) : Promise<Session> {
@@ -54,3 +44,6 @@ export class SessionRepository implements ISessionRepository{
     }
 
 }
+
+
+export const sessionRepository = new SessionRepository();
