@@ -7,13 +7,11 @@ import { connectDatabase, } from '../../database';
 import 'reflect-metadata';
 import { InversifyExpressServer } from 'inversify-express-utils';
 
-import { container } from "./express";
+import { container } from './containers';
 import { ErrorMiddleware } from '../middlewares';
 
 const server = new InversifyExpressServer(container);
 const port = mainConfig.server.port;
-const app = express();
-
 
 server.setConfig((app) => {
  app.use(express.json());

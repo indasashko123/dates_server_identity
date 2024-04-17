@@ -41,10 +41,10 @@ export class AccountRepository implements IAccountRepository {
 
     async update(account: Account): Promise<Account> {
         await AccountModel.update({
-            dateOfBirth : account.dateOfBirth,
             email : account.email,
             isDeleted : account.isDeleted,
-            password : account.password    
+            password : account.password,
+            isActivated : account.isActivated,
         },{where : {id : account.id}});
         return await AccountModel.findByPk(account.id) as Account;
     }

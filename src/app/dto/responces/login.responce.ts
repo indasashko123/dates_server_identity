@@ -4,6 +4,6 @@ export class LoginResponce {
     id : string;
     email : string;
     roles : string[];
-    activate : boolean;
+    isActivated : boolean;
     jwt : IJwtToken;
 }

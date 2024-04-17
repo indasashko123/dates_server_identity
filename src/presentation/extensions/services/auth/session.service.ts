@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { ISessionRepository, SessionService } from "../../../../../app";
+import { ISessionRepository, SessionService } from "../../../../app";
 
 
 @injectable()

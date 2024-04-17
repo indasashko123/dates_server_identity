@@ -1,7 +1,7 @@
 import { NextFunction } from "express";
-import { ExtendRequest } from "../../../extensions";
-import { banRepository } from "../../../../database";
-import { BanTarget,ApiError } from "../../../../app";
+import { ExtendRequest } from "../extensions";
+import { banRepository } from "../../database";
+import { BanTarget,ApiError } from "../../app";
 
 
 

@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { TokenService } from "../../../../../app";
+import { TokenService } from "../../../../app";
 
 
 @injectable()

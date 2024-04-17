@@ -3,6 +3,7 @@ import { validationResult } from "express-validator";
 import { inject, injectable } from "inversify";
 import { ExtendRequest } from "../../../extensions";
 import { ApiError, GetAccountQuerry, IAccountService } from "../../../../app";
+import { httpGet } from "inversify-express-utils";
 
 
 @injectable()
@@ -13,10 +14,11 @@ export class AccountController {
         @inject("IAccountService") private readonly accountService : IAccountService
     ) {}
 
+    @httpGet("/")
     async get (req : ExtendRequest, res : Response, next : NextFunction) {
         try {
             const errors = validationResult(req);
-            if (errors.isEmpty()) {0
+            if (errors.isEmpty()) {
                 return next(ApiError.BadRequest("Validation error",errors.array()));
             }
             const query : GetAccountQuerry = req.query as GetAccountQuerry;

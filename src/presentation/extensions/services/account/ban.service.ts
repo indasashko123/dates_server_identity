@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { BanService, IBanRepository } from "../../../../../app";
+import { BanService, IBanRepository } from "../../../../app";
 
 @injectable()
 export class BanInjectableService extends BanService{

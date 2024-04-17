@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { SessionRepository } from "../../../../../database";
+import { SessionRepository } from "../../../../database";
 
 
 

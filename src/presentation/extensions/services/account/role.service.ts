@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { RoleService } from "../../../../../app";
+import { RoleService } from "../../../../app";
 
 
 @injectable()
